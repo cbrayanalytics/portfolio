@@ -7,8 +7,8 @@
 ### R Projects
 
 
-[Aspirin Analysis](/rprojects/aspirin.rmd)
-<img src="/rproject/Bayer.png" style="width:600px;height:400px;">
+[Aspirin Analysis](/rproject/aspirin.rmd)
+<img src="rproject/Bayer.png" style="width:600px;height:400px;">
 
 
 ### Python Projects
