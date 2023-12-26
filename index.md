@@ -8,7 +8,7 @@
 
 
 [Aspirin Analysis](/rprojects/aspirin.rmd)
-<img src=rproject/image01?raw=true"/>
+<img src=portfolio/rproject/image01?raw=true"/>
 
 
 ### Python Projects
