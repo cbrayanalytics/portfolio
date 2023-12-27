@@ -1,0 +1,223 @@
+---
+title: "Vole Skull Analysis"
+author: "Casey Bray"
+date: "9/17/2021"
+output:
+  html_document:
+    df_print: paged
+editor_options:
+  chunk_output_type: inline
+---
+
+```{r setup/libraries, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+setwd("C:/Users/casey/OneDrive/Desktop/Casey/Dakota State University/DSU Classes/STAT 601/ST-601/Proj 1")
+
+# install.packages("readxl")
+# install.packages("ggplot2")
+# install.packages("patchwork")
+# install.packages("caret")
+# install.packages("ggcorrplot")
+
+
+library("readxl") ## To read in excel file one sheet at a time.
+library("ggplot2") ## For histogram, scatter and box plots.
+library("patchwork") ## To print multiple plots in a single row/column.
+library("caret") ## For cross-validation.
+library("ggcorrplot") ## For correlation matrix
+```
+
+
+
+```{r functions, echo=TRUE}
+
+# Function to preprocess data.
+preProcess <- function(x) {
+  colnames(x) <- col_names # Subset Dataframe with simple column names
+    x <- x[,-1] # Remove Index from Dataframe
+      x$ID <- factor(x$ID) # Convert ID to factor for plotting/model
+        x <- na.omit(x) # Omit any NA values within Dataframe
+  return(x) # Return processed Dataframe
+}
+
+## Empty rows, Unknown/22, 
+
+# Function to convert any outliers outside IQR to median values.
+impute <- function(x){
+   qntile1 <- quantile(x, .25) # Calculate 1rst quantile of column
+   qntile2 <- quantile(x, .75) # Calculate 3rd quantile of column
+   
+   limit <- IQR(x, na.rm = T) # Calculate interquantile range.
+   x[x < (qntile1 - (limit * 1.5))] <- median(x) # Below lower limit to median.
+   x[x > (qntile2 + (limit * 1.5))] <- median(x) # Above upper limit to median.
+   return(x) # Return processed column
+}
+```
+
+
+
+
+```{r dataset/process, echo=TRUE}
+## Setup Column Names for combine.
+col_names <- c("Index","ID","Length","Height","Width")
+
+## Read each individual sheet in as dataframe, change column names,
+## remove index column, remove any NA values.
+unknown <- preProcess(as.data.frame(read_excel("Vole Skulls.xlsm", sheet = 1)))
+subterraneus <- preProcess(as.data.frame(read_excel("Vole Skulls.xlsm", sheet = 2)))
+multiplex <- preProcess(as.data.frame(read_excel("Vole Skulls.xlsm", sheet = 3)))
+
+## Vizualize typos 
+boxplot(unknown[,-1],
+        main = "Unknown Typos - Width/40, Width/5000, Length/23555")
+boxplot(subterraneus[,-1],
+        main = "Subterraneus Typos - Length/21899, Height/7722, Width/42")
+boxplot(multiplex[,-1],
+        main = "Multiplex Typos - Length/234, Height/84")
+
+
+## Impute unknown typos - Width/40, Width/5000, Length/23555
+unknown$Length[unknown$Length >= 5000] <- median(unknown$Length)
+unknown$Width[unknown$Width >= 1000 | unknown$Width <= 200]<-median(unknown$Width)
+
+unknown[,2:4] <- lapply(unknown[,2:4],impute)
+  
+## Impute Subterraneus typos - Length/21899, Height/7722, Width/42
+subterraneus$Length[subterraneus$Length >= 5000] <- median(subterraneus$Length)
+subterraneus$Width[subterraneus$Width <= 300] <- median(subterraneus$Width)
+subterraneus$Height[subterraneus$Height >= 5000] <- median(subterraneus$Height)
+
+## Apply impute function for remaining outliers
+subterraneus[,2:4] <- lapply(subterraneus[,2:4],impute)
+
+## Impute multiplex typos - Length/234, Height/84
+multiplex$Length[multiplex$Length <= 1000] <- median(multiplex$Length)
+multiplex$Height[multiplex$Height <= 300] <- median(multiplex$Height)
+
+multiplex[,2:4] <- lapply(multiplex[,2:4],impute)
+
+## Bind multiplex and subterraneus together to form training set.
+train <- rbind(subterraneus,multiplex)
+```
+
+
+```{r Data Exploration, echo=TRUE}
+## Bind training set with unknown for visualization.
+plot <- rbind(train,unknown)
+
+## Boxplots of ID vs Numerical variables, colored by ID
+## Outlier points fall within range due to Interquartile Rule.
+## Also, adds varation on data to improve model performance.
+b1 <- ggplot(plot, aes(x= ID, y=Length, fill=ID)) + 
+  geom_boxplot() +
+  ggtitle("Vole Skull Length(.01mm)")
+  
+b2 <- ggplot(plot, aes(x= ID, y=Width, fill=ID)) + 
+  geom_boxplot() +
+  ggtitle("Vole Skull Width(.01mm)")
+
+b3 <- ggplot(plot, aes(x= ID, y=Height, fill=ID)) + 
+  geom_boxplot() +
+  ggtitle("Vole Skull Height(.01mm)")
+
+b1 + b2 + b3 + plot_layout(ncol = 1)
+
+## Histograms of each numeric variables, grouped by ID
+h1 <- ggplot(plot, aes(x = Length, fill = ID)) + 
+  geom_histogram(position = "identity", alpha = 0.3, bins = 12) + 
+  ggtitle("Skull Length by ID (0.01mm)")
+
+h2 <- ggplot(plot, aes(x = Width, fill = ID)) + 
+  geom_histogram(position = "identity", alpha = 0.3, bins = 12) + 
+  ggtitle("Skull Width by ID (0.01mm)")
+
+h3 <- ggplot(plot, aes(x = Height, fill = ID)) + 
+  geom_histogram(position = "identity", alpha = 0.3, bins = 12) + 
+  ggtitle("Skull Height by ID (0.01mm)") + 
+  ylab("Count")
+
+h1 + h2 + h3 + plot_layout(ncol = 1)
+
+## scatterplots of numeric variables with regression line, colored by ID.
+s1 <- ggplot(train, aes(Height, Width, colour = ID)) +
+  geom_point(size = 4) + 
+  geom_smooth(method = "glm", formula = y ~ x, se = FALSE) +
+  ggtitle("Height vs Width")
+
+s2 <- ggplot(train, aes(Height, Length, colour = ID)) + 
+  geom_point(size=4) +
+  geom_smooth(method = "glm", formula = y ~ x, se = FALSE) +
+  ggtitle("Height vs Length")
+
+s3 <- ggplot(train, aes(Width, Length, colour = ID)) +
+  geom_point(size=4) +
+  geom_smooth(method = "glm", formula = y ~ x,  se = FALSE)+ 
+  ggtitle("Width vs Length")
+
+
+s1 + s2 + s3 + plot_layout(ncol = 1)
+
+## Display Correlations between columns in data.
+
+plot$ID <- as.numeric(plot$ID)
+corr <- cor(plot)
+ggcorrplot(corr, hc.order = TRUE, lab = TRUE) +
+  ggtitle("Vole Correlation Matrix") +
+  theme(plot.title = element_text(hjust = 0.5)) # Adjust title to center
+
+table(train$ID)
+```
+
+**Exploratory Analysis**
+Plots agree with statements in background. Subterraneus is smaller than multiplex 
+in all measurements. Unknown shows a range of data that extends on either side 
+of both classes. Predictions of both classes can be expected. Scatterplots show 
+a high correlation and processed data follows Regression line closely. Skull length
+data appears slightly left skewed in histograms. This may make it difficult to 
+distinguish between subterraneus and multiplex. In boxplots, unknown data seems
+more dispersed around the multiplex data for all three predictors so I expect more
+predictions in multiplex. Correlation Matrix shows high correlations between all
+predictor variables. This could mean multicollinearity, however, I left all data in 
+to add more prediction power to model. 
+
+
+```{r Model, echo=TRUE}
+# Provide seed for reproducing.
+set.seed(123)
+
+## Setup Cross Validation and save predictions from model.
+trctrl <- trainControl(method = "cv", number = 10, savePredictions = TRUE)
+
+## Run model with Response of ID and predictors Length, Width, and Height.
+model <- train(ID~., data = train, method = "glm", trControl = trctrl, tuneLength = 0)
+
+## Print model summary with p-values. 
+summary(model)
+
+## Print model accuracy and kappa values.
+model
+
+## Make predictions from model using unclassified data and print summary of 
+## classifications.
+predictions <- predict(model, newdata = unknown)
+summary(predictions)
+
+## Create new dataframe of unknown and attach predictions to ID column
+results <- unknown
+results$ID <- predictions  
+
+## Print results with new ID
+head(results)
+
+```
+
+**Model/Prediction Summary**
+Model includes simple interactions(ID ~ Length + Width + Height). 10-Fold Cross 
+Validation yields an accuracy of 91% and a Kappa of 83%. The Kappa is very strong
+at 83% and suggests prediction by chance is relatively low. With an error rate of 
+9%, the model is highly accurate. Predictions are 82 for subterraneus and 117 for 
+multiplex. Multiplex has 35 more predictions than subterraneus even though the 
+factor ratio was extremely close to 1:1, this supports my findings in the boxplots.
+
+
+
