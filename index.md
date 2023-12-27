@@ -1,14 +1,14 @@
-## Portfolio
-
+# Portfolio
 
 ---
 
+## R Projects
 
-### R Projects
-<hr>
+---
 
-[Aspirin Analysis](https://github.com/cbrayanalytics/portfolio/blob/main/rproject/aspirin.rmd)
-<img src="https://github.com/cbrayanalytics/portfolio/blob/main/rproject/Bayer.png"?raw=true/>
+### Aspirin Analysis
+
+[R Markdown](R Projects/Project_1.Bray.html)
 
 
 ### Python Projects
