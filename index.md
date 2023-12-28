@@ -27,7 +27,8 @@ A team-based approach to provide an accuracte classification algorithm for mixed
 
 
 
-### Python Projects
-<hr>
+## Python Projects
+
+---
 
 [Project 1 Title](http://example.com)
