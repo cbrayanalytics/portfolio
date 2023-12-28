@@ -1,0 +1,620 @@
+---
+title: "Stat602FinalProject"
+author: "Casey Bray,Pierce Plucker, Joseph kannookaden, Lok Chi Lam"
+date: "4/23/2022"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, cache = F}
+knitr::opts_chunk$set(error = TRUE)
+```
+
+```{r data}
+## install.packages("readr")
+library(readr)
+
+## Replace with your location of "labeled.csv" file for final project.
+setwd("C:/Users/casey/OneDrive/Desktop/Casey/Dakota State University/DSU Classes/STAT 602/Final Project/Final Documents")
+
+## Read in data, assign "X" column to row names so it doesn't appear as variable in data
+data <- read.csv("labeled.csv", row.names = "X")
+data$Class <- as.factor(data$Class) ## Convert "Class" to factor
+
+
+## Read in unlabeled data
+sampA <- read.csv("samp.A.csv", row.names = "X")
+sampB <- read.csv("samp.B.csv", row.names = "X")
+sampC <- read.csv("samp.C.csv", row.names = "X")
+
+head(data)  ## View head of data.
+
+cat("N/A values: ", sum(is.na(data))) ## Check for NA's
+cat("\nDuplicates: ", sum(duplicated(data))) ## Check for Duplicated data
+cat("\nClass Table: \n") ## Check for balance among classes
+table(data$Class) ## Check for Amounts in each class
+
+```
+
+```{r, feature plot, fig.height=8,fig.width=10}
+## install.packages("GGally")
+library("GGally")
+
+## Plot columns 1:8
+ggpairs(data, columns = 1:8 , aes(color=Class, alpha=0.3),
+        upper = list(continuous = wrap("cor", size = 3.0)),
+                     title = "Seeds Data Pairs Plot")
+```
+
+```{r PCA}
+
+subset <- subset.data.frame(data, select = -Class, drop = TRUE)
+## Perform PCA analysis on predictor variables, apply both Scaling and zero centering.
+pca <- prcomp(subset,
+              center = TRUE,
+              scale = TRUE)
+
+## Calculate the amount of deviance explained per variable.
+pr.var <- pca$sdev^2
+pve <- pr.var / sum(pr.var)
+cat("Percentage of Variance Explained: \n",pve)
+
+
+## Plot Variance Explained
+par(mfrow=c(1,2))
+plot(pve, xlab = "Principal Component",
+     ylab = "Proportion of Variance Explained", ylim = c(0,1),
+     type = "b")
+plot(cumsum(pve), xlab = "Principal Component",
+     ylab = "Cumulative Propotion of Variance Explained",
+     ylim = c(0,1), type = "b")
+```
+- It appears that PCA1 explains 68% of the Variance in the data with PCA2 mopping 
+up 21% of the remainder. Beyond that, the components do not cover much ground.
+Principal Component graphs show an elbow right around , which is where we should 
+select our amount of feature because we wont see much gain after and interpretation
+will be considerably more difficult. 
+
+- Looking at our biplot, it appears that component one is positvely correlated with
+"MajorAxisLength" and "Perimeter". Component two is highly correlated with "Eccentricity"
+and appears to be very negatively correlated with "Extent". 
+
+
+
+** ggbiplot code from finnstats at R-bloggers:
+https://www.r-bloggers.com/2021/05/principal-component-analysis-pca-in-r/ **
+
+More information available at:
+https://github.com/vqv/ggbiplot
+```{r, warning=FALSE, fig.height=8, fig.width=10}
+## install.packages("devtools")
+library(devtools)
+## install_github("vqv/ggbiplot") ## Install graph from github (https://github.com/vqv/ggbiplot)
+library(ggbiplot)
+
+
+## Plot both "PCA1 & PCA2", apply ellipses for group visibility.
+g <- ggbiplot(pca,
+              obs.scale = 1,
+              var.scale = 1,
+              groups = data$Class,
+              ellipse = TRUE,
+              circle = TRUE,
+              ellipse.prob = 0.68)
+g <- g + scale_color_discrete(name = '')
+g <- g + theme(legend.direction = 'horizontal',
+               legend.position = 'top')
+
+print(g)
+```
+
+
+```{r impute function}
+impute <- function(x){
+   qntile1 <- quantile(x, .25) # Calculate 1rst quantile of column
+   qntile2 <- quantile(x, .75) # Calculate 3rd quantile of column
+   
+   limit <- IQR(x, na.rm = T) # Calculate interquantile range.
+   x[x < (qntile1 - (limit * 1.5))] <- median(x) # Below lower limit to median.
+   x[x > (qntile2 + (limit * 1.5))] <- median(x) # Above upper limit to median.
+   return(x) # Return processed column
+}
+
+## For the response variables in each class, apply the impute function. 
+for (i in c("BOMBAY", "DERMASON", "CALI", "SEKER", "SIRA", "HOROZ")) {
+data[data$Class == i,1:7] <- lapply(data[data$Class == i,1:7],impute)
+}
+```
+
+
+
+```{r cost per seed function}
+## 453.592 grams/lb
+bombay_seed_lb <- 5.56/(453.592/1.92)  ## Bombay $5.56/lb, Bombay 1.92 grams/seed
+cali_seed_lb <- 6.02/(453.592/0.61) ## Cali $6.02/lb, Cali 0.61 grams/seed
+dermason_seed_lb <- 1.98/(453.592/0.28) ## Dermason $1.98/lb, 0.28 grams/seed
+horoz_seed_lb <- 2.43/(453.592/0.52) ## Horoz $2.43/lb, 0.52 grams/seed
+seker_seed_lb <- 2.72/(453.592/0.49) ## Seker $2.72/lb, 0.49 grams/seed
+sira_seed_lb <- 5.40/(453.592/0.38) ## Sira $5.40/lb, 0.38 grams/seed
+
+
+
+## Initialize variable "Cost" with value of zero. 
+## Takes in a column or vector and determines seed class,
+## Finally, adds each cost per seed value to cost for a total cost. 
+seed_cost <- function(data){
+  cost <- 0
+  for (i in data) {
+  if (i == "BOMBAY") {
+    cost = cost + bombay_seed_lb
+  } else if (i == "CALI") {
+    cost = cost + cali_seed_lb
+  } else if (i == "SEKER") {
+    cost = cost + seker_seed_lb 
+  } else if (i == "SIRA") {
+    cost = cost + sira_seed_lb
+  } else if (i == "HOROZ") {
+    cost = cost + horoz_seed_lb 
+  } else if (i == "DERMASON") {
+    cost = cost + dermason_seed_lb 
+  }
+  }
+  return(cost)
+}
+
+## Creates a matrix with the results of the predictions containing
+## classification accuracy, test set value, predictions value, correct 
+## predictions value (Sensitivity), Difference
+value <- function(predictions, true_values){
+  results <- matrix(c(mean(predictions == true_values),
+                       seed_cost(true_values),
+                       seed_cost(predictions),
+                       seed_cost(true_values[predictions == true_values]),
+                       seed_cost(true_values)-seed_cost(true_values[predictions ==                                                                        true_values])))
+  colnames(results) <- 'Results'
+  rownames(results) <- c('Classification Accuracy','Test Set Value',
+                         'Predictions Value','Correct Predictions Value',
+                         'Difference')
+  results <- as.table(results)
+  return(results)
+}
+```
+
+
+```{r kfold}
+## Folds and sample code from Jake Drew, Jul 4, 2014:
+## https://stats.stackexchange.com/questions/61090/how-to-split-a-data-set-to-do-10-fold-cross-validation
+
+## Randomize dataset by sampling the entire dataset.
+samp <- data[sample(nrow(data)),]
+
+## create folds by cutting the dataset into ten distinct pieces.
+folds <- cut(seq(1,nrow(samp)),breaks=10,labels=FALSE)
+```
+
+
+####THIS SECTION CREATES THE BASE LDA, QDA, and MCLUST MODELS (WITHOUT OUR ENHANCED, POLYNOMIAL MODEL)####
+```{r LDA}
+####BASE MODEL 1: LDA####
+library(MASS)
+
+## Create empty lists for populating test metrics.
+lda.class <- rep(0,10)
+lda.test <- rep(0,10)
+lda.pred <- rep(0,10)
+lda.true <- rep(0,10)
+lda.diff <- rep(0,10)
+
+
+## Iterate through each test fold and fit the remaining folds into a model
+## Then retrieve predictions and extract test metrics.
+for (i in 1:10) {
+  testIndexes <- which(folds==i,arr.ind=FALSE)
+  testData <- data[testIndexes, -8]
+  trainData <- data[-testIndexes, ]
+  labels <- data$Class[testIndexes]
+
+  lda.fit <- lda(Class ~  Area + MajorAxisLength + MinorAxisLength + Eccentricity, data = trainData)
+  lda.preds <- predict(lda.fit, testData)
+  ## table(lda.preds$class, labels)
+
+  lda.value <- value(lda.preds$class,labels)
+  lda.class[i] <- lda.value[1]
+  lda.test[i] <- lda.value[2]
+  lda.pred[i] <- lda.value[3]
+  lda.true[i] <- lda.value[4]
+  lda.diff[i] <- lda.value[5]
+}
+
+## Print mean metrics from each populated lists
+cat("Cost Analysis: \n")
+cat("Classification Accuracy: ", mean(lda.class))
+cat("\nTest value: ", mean(lda.test))
+cat("\nPredictions value: ", mean(lda.pred))
+cat("\nSpecificity value: ", mean(lda.true))
+cat("\nDifference in cost: ", mean(lda.diff))
+
+```
+
+
+```{r QDA}
+####BASE MODEL 2: QDA####
+set.seed(789)
+qda_class <- rep(0,10)
+qda.test <- rep(0,10)
+qda.pred <- rep(0,10)
+qda.true <- rep(0,10)
+qda.diff <- rep(0,10)
+
+for (i in 1:10) {
+  testIndexes <- which(folds==i,arr.ind=TRUE)
+  testData <- data[testIndexes, -8]
+  trainData <- data[-testIndexes, ]
+  labels <- data$Class[testIndexes]
+
+  qda.fit <- qda(Class ~ Area + MajorAxisLength + MinorAxisLength + Eccentricity, data = trainData)
+  qda.class <- predict(qda.fit, testData)$class
+
+  qda.value <- value(qda.class,labels)
+  qda_class[i] <- qda.value[1]
+  qda.test[i] <- qda.value[2]
+  qda.pred[i] <- qda.value[3]
+  qda.true[i] <- qda.value[4]
+  qda.diff[i] <- qda.value[5]
+}
+
+cat("Cost Analysis: \n")
+cat("Classification Accuracy: ", mean(qda_class))
+cat("\nTest value: ", mean(qda.test))
+cat("\nPredictions value: ", mean(qda.pred))
+cat("\nSpecificity value: ", mean(qda.true))
+cat("\nDifference in cost: ", mean(qda.diff))
+```
+
+
+```{r Mclust}
+####BASE MODEL 3: MCLUST####
+library("mclust")
+
+mclust_class <- rep(0,10)
+mclust.test <- rep(0,10)
+mclust.pred <- rep(0,10)
+mclust.true <- rep(0,10)
+mclust.diff <- rep(0,10)
+
+mclust.diff <- rep(0,10)
+  
+ for (i in 1:10) {
+  testIndexes <- which(folds==i,arr.ind=TRUE)
+  
+testData <- data[testIndexes, c(1,3,4,5)]
+labels <- data$Class[testIndexes]
+
+trainData <- data[-testIndexes, c(1,3,4,5)]
+trainlabels <- data$Class[-testIndexes]
+  
+  mclust.fit <- MclustDA(trainData, trainlabels, type = "EDDA")
+  ##mclust.fit
+  
+  mclust.preds <- predict(mclust.fit,testData)
+  
+  ##table(mclust.preds$classification,labels)
+
+  mclust.value <- value(mclust.preds$classification,labels)
+  mclust_class[i] <- mclust.value[1]
+  mclust.test[i] <- mclust.value[2]
+  mclust.pred[i] <- mclust.value[3]
+  mclust.true[i] <- mclust.value[4]
+  mclust.diff[i] <- mclust.value[5]
+ }
+
+cat("Cost Analysis: \n")
+cat("--------------------------------------\n")
+cat("Classification Accuracy: ", mean(mclust_class))
+cat("\nTest value: ", mean(mclust.test))
+cat("\nPredictions value: ", mean(mclust.pred))
+cat("\nSpecificity value: ", mean(mclust.true))
+cat("\nDifference in cost: ", mean(mclust.diff))
+```
+### END OF BASE MODELS
+
+
+## Model Plots
+```{r model plots, fig.width=10, fig.height=8}
+## install.packages("ggpubr")
+library("ggpubr")
+
+reps <- c(1,2,3,4,5,6,7,8,9,10)
+
+## LDA Plot
+figureA <- ggplot() +
+  geom_line(aes(reps,lda.pred, color = "LDA Predictions")) +
+  geom_line(linetype = "dashed", aes(reps,lda.test, color = "LDA Test")) +
+  ggtitle("Prediction vs Test Value, Mean Diff: ", mean(lda.diff)) +
+   labs(color='Results') +
+  ylab("Value in Dollars") +
+  scale_x_continuous(name = "Repetitions", breaks = seq(0,10,1)) +
+   labs(color='Results')
+
+## QDA Plot
+figureB <- ggplot() +
+  geom_line(aes(reps,qda.pred, color = "QDA Predictions")) +
+  geom_line(linetype = "dashed", aes(reps,qda.test, color = "QDA Test")) +
+  ggtitle("Prediction vs Test Value, Mean Diff: ", mean(qda.diff)) +
+   labs(color='Results') +
+  ylab("Value in Dollars") +
+  scale_x_continuous(name = "Repetitions", breaks = seq(0,10,1)) +
+   labs(color='Results')
+
+## Mclust plot
+figureD <- ggplot() +
+  geom_line(aes(reps,mclust.pred, color = "Mclust Predictions")) +
+  geom_line(linetype = "dashed", aes(reps,mclust.test, color = "Mclust Test")) +
+  ggtitle("Prediction vs Test Value, Mean Diff: ", mean(mclust.diff)) +
+  ylab("Value in Dollars") +
+  scale_x_continuous(name = "Repetitions", breaks = seq(0,10,1)) +
+   labs(color='Results')
+
+## Using 
+ggarrange(figureA, figureB, figureD)
+```
+
+## Model Tables (PIERCE)
+```{r, model tables}
+## install.packages("knitr")
+## install.packages("kableExtra")
+library(knitr);library(kableExtra)
+
+class_results <- round(matrix(c(mean(lda.class), mean(qda_class), mean(mclust_class))),digits = 4)
+test_results <- round(matrix(c(mean(lda.test), mean(qda.test), mean(mclust.test))),digits=4)
+pred_results <- round(matrix(c(mean(lda.pred), mean(qda.pred), mean(mclust.pred))),digits=4)
+true_results <- round(matrix(c(mean(lda.true), mean(qda.true), mean(mclust.true))),digits=4)
+diff_results <- round(matrix(c(mean(lda.diff), mean(qda.diff), mean(mclust.diff))),digits=4)
+names <- c("LDA", "QDA", "MClust")
+
+error <- cbind(names,class_results,test_results,pred_results,true_results,diff_results)
+
+colnames(error) <- c("Names","Classification Accuracy", "Test value", "Predictions value", "Specificity value", "Difference in cost")
+
+error.df <- data.frame(error)
+
+kable(error.df, caption="Model Performance Summary",align="c", escape=F, booktabs=T, col.names=c("Model", "Accuracy", "Test (TRUE)", "Predicted Value", "Specificity Value", "Value Error"))%>%
+  kable_styling(latex_options = "HOLD_position")
+```
+
+
+```{r determine best poly}
+## install.packages("dplyr")
+## install.packages("stringr")
+## install.packages("tidyr")
+## install.packages("caret")
+
+#libraries that may not yet be loaded 
+library(dplyr)
+library(stringr)
+library(tidyr)
+library(caret)
+
+# Create tibble with all potential polynomials listed as character strings
+
+tibtst <- tibble(A=c("Area","poly(Area,2)","poly(Area,3)","poly(Area,4)","poly(Area,5)","poly(Area,6)",""),
+       E=c("Eccentricity","poly(Eccentricity,2)","poly(Eccentricity,3)","poly(Eccentricity,4)","poly(Eccentricity,5)","poly(Eccentricity,6)",""),
+           Mj=c("MajorAxisLength","poly(MajorAxisLength,2)","poly(MajorAxisLength,3)","poly(MajorAxisLength,4)","poly(MajorAxisLength,5)","poly(MajorAxisLength,6)",""),
+       Mi=c("MinorAxisLength","poly(MinorAxisLength,2)","poly(MinorAxisLength,3)","poly(MinorAxisLength,4)","poly(MinorAxisLength,5)","poly(MinorAxisLength,6)",""))
+
+
+# Create possible combinations of each polynomial. 
+# Note that we don't want: class ~ poly(Area, 3) + poly(Area, 2) 
+# That makes: class ~ Area^3 + Area^2 + Area + Area^2 + Area
+
+tst2 <- expand(tibtst, A, E, Mj, Mi)
+
+tst2$A.tmp <- ifelse(tst2$A=="", paste(tst2$A, sep = ""), paste(tst2$A, "+",sep = ""))
+tst2$E.tmp <- ifelse(tst2$E=="", paste(tst2$E, sep = ""), paste(tst2$E, "+",sep = ""))
+tst2$Mj.tmp <- ifelse(tst2$Mj=="", paste(tst2$Mj, sep = ""), paste(tst2$Mj, "+",sep = ""))
+tst2$Mi.tmp <- ifelse(tst2$Mi=="", paste(tst2$Mi, sep = ""), tst2$Mi)
+
+# Formatting
+
+tst2$id1 <- paste(tst2$A.tmp, tst2$E.tmp, tst2$Mj.tmp, tst2$Mi.tmp, sep = "")
+tst2$mod.id <- ifelse(str_sub(tst2$id1,start = -1)=="+", str_sub(tst2$id1, 1, nchar(tst2$id1)-1), tst2$id1)
+
+
+#Check to see if mod.id ends with + or + with spaces after
+
+#unique(str_sub(tst2$mod.id, start=-1)=="+")     #False
+#unique(str_sub(tst2$mod.id, start=-2)=="+ ")    #False
+#unique(str_sub(tst2$mod.id, start=-3)=="+  ")   #False
+
+# Check if any NA
+# unique(is.na(tst2$mod.id)) #False
+
+# The first row is empty and will have to be removed. Checking if any other mod.ids are just spaces
+# tst2$mod.id[tst2$mod.id %in% c("", " ", "  ", "   ", "    ", "     ", "      ")]
+# looks like row 1 was the only issue 
+
+#remove row 1 and create object containing mod.id: poly.options1
+
+poly.options1 <- tst2$mod.id[-1]
+
+# Check for Duplicates
+# length(unique(poly.options1))==length(poly.options1) #TRUE
+
+#Changing to list 
+poly.options2 <- paste(poly.options1[1:2400], sep = ",")
+poly.options <- as.list(poly.options2)
+#########################################################################################
+
+# TESTING TO MAKE SURE THIS WORKS
+# First model: Eccentricity 1st degree + Major 5th degree + Minor 6th degree
+# Second model: Eccentricity 1st degree + Major 6th degree
+
+test.poly.opts <- poly.options[90:91]
+
+# as.formula(paste()) idea is from
+# https://www.r-bloggers.com/2018/09/r-tip-how-to-pass-a-formula-to-lm/
+
+resp <- "Class"
+
+test.fns <- lapply(test.poly.opts, function(x)as.formula(paste(resp,x,sep = " ~ ")))
+
+set.seed(55)
+
+test.poly.fit <- lapply(test.fns, function(x)lda(x, data=data, CV = TRUE))
+test.confusion <- lapply(test.poly.fit, function(x)confusionMatrix(data$Class, x$class))
+
+#written out manually
+
+test90 <- lda(Class~Eccentricity + poly(MajorAxisLength, 5) + poly(MinorAxisLength, 6), data = data, CV=TRUE)
+test90cfm <- confusionMatrix(data$Class, test90$class)
+
+test91 <- lda(Class~Eccentricity + poly(MajorAxisLength, 6), data = data, CV = TRUE)
+test91cfm <- confusionMatrix(data$Class, test91$class)
+
+#confusion matrix (with accuracy rates) comparison
+# 
+# test.confusion[[1]]
+# test90cfm           #Same
+# 
+# test.confusion[[2]]
+# test91cfm           #Same
+
+######################################################################
+
+poly.funcs <- lapply(poly.options, function(x)as.formula(paste(resp,x,sep = " ~ ")))
+
+poly.fit <- lapply(poly.funcs, function(x)lda(x, data=data, CV = TRUE))
+poly.confusion <- lapply(poly.fit, function(x)confusionMatrix(data$Class, x$class))
+
+poly.accuracy <- lapply(poly.confusion, function(x){
+  x[["overall"]][["Accuracy"]]
+})
+
+poly.names <- lapply(poly.fit, function(x){
+  x[["terms"]][[3]]
+})
+
+accuracy.df <- data.frame(Terms=c(as.character(poly.names)),
+           accuracy=c(as.numeric(poly.accuracy)))
+
+#displays top accuracy model
+accuracy.df[accuracy.df$accuracy %in% max(accuracy.df$accuracy), ]
+```
+
+
+# Best poly model
+```{r, poly LDA}
+## Create empty lists for populating test metrics.
+lda.class <- rep(0,10)
+lda.test <- rep(0,10)
+lda.pred <- rep(0,10)
+lda.true <- rep(0,10)
+lda.diff <- rep(0,10)
+
+
+## Iterate through each test fold and fit the remaining folds into a model
+## Then retrieve predictions and extract test metrics.
+for (i in 1:10) {
+  testIndexes <- which(folds==i,arr.ind=FALSE)
+  testData <- data[testIndexes, -8]
+  trainData <- data[-testIndexes, ]
+  labels <- data$Class[testIndexes]
+
+  lda.fit <- lda(Class ~  poly(Area, 4) + poly(Eccentricity, 3) + poly(MajorAxisLength, 5) + poly(MinorAxisLength, 6), data = trainData)
+  lda.preds <- predict(lda.fit, testData)
+  ## table(lda.preds$class, labels)
+  ##lda.fit <- lda(Class ~  poly(Area,4) + MajorAxisLength + ConvexArea + Eccentricity, data = trainData
+  lda.value <- value(lda.preds$class,labels)
+  lda.class[i] <- lda.value[1]
+  lda.test[i] <- lda.value[2]
+  lda.pred[i] <- lda.value[3]
+  lda.true[i] <- lda.value[4]
+  lda.diff[i] <- lda.value[5]
+}
+
+## Print mean metrics from each populated lists
+cat("Cost Analysis: \n")
+cat("Classification Accuracy: ", mean(lda.class))
+cat("\nTest value: ", mean(lda.test))
+cat("\nPredictions value: ", mean(lda.pred))
+cat("\nSpecificity value: ", mean(lda.true))
+cat("\nDifference in cost: ", mean(lda.diff))
+```
+
+## confusion matrix of best mod
+```{r, poly fitted predictions}
+## Predict on LDA model with polynomials fitted
+original_preds <- predict(lda.fit, data)
+
+## Print confusion matrix of results by class
+lda.cfm <-table(original_preds$class, data$Class)
+
+lda.cfm
+
+## Create table of confusion matrix results.
+kable(lda.cfm, align = "c", booktabs=T, caption = "LDA Confusion Matrix")%>%
+  kable_styling(latex_options = "HOLD_position")%>%
+  add_header_above(c(" "=1,"Reference"=6), line = F, bold = T) %>%
+  pack_rows("Predicted",1,6) 
+
+## Return value of labeled samples.
+cat("\n Predicted Value: ", seed_cost(original_preds$class))
+```
+
+```{r, Poly LDA graph}
+## Poly LDA predicted vs true value graph
+ggplot() +
+  geom_line(aes(reps,lda.pred, color = "Poly LDA Predictions")) +
+  geom_line(linetype = "dashed", aes(reps,lda.test, color = "Poly LDA Test")) +
+  ggtitle("Prediction vs Test Value, Mean Diff: ", mean(lda.diff)) +
+   labs(color='Results') +
+  ylab("Value in Dollars") +
+  scale_x_continuous(name = "Repetitions", breaks = seq(0,10,1)) +
+   labs(color='Results')
+```
+
+
+```{r Unclassified Samples}
+## Predictions from Sample A
+lda.sampA.preds <- predict(lda.fit, sampA)
+
+lda.sampA.cost <- seed_cost(lda.sampA.preds$class)
+
+a.pred.tbl <- table(lda.sampA.preds$class)
+cat("Sample A Seed Cost:", lda.sampA.cost)
+cat("\n")
+
+
+## Predictions from Sample B
+lda.sampB.preds <- predict(lda.fit, sampB)
+
+lda.sampB.cost <- seed_cost(lda.sampB.preds$class)
+
+b.pred.tbl <- table(lda.sampB.preds$class)
+cat("\nSample B Seed Cost:", lda.sampB.cost)
+
+
+## Predictions from Sample C
+cat("\n")
+lda.sampC.preds <- predict(lda.fit, sampC)
+
+lda.sampC.cost <- seed_cost(lda.sampC.preds$class)
+
+
+c.pred.tbl <- table(lda.sampC.preds$class)
+cat("\nSample C Seed Cost:", lda.sampC.cost)
+
+unlab.tab <- rbind(a.pred.tbl, b.pred.tbl, c.pred.tbl)
+
+unlab.tab <- rbind(a.pred.tbl, b.pred.tbl, c.pred.tbl)
+
+
+## Create table of unlabled predictions
+kable(unlab.tab, align = "c", booktabs=T, escape=F, caption = "Predictions for Unlabeled Data", row.names =F)%>%
+  kable_styling(latex_options = "HOLD_position")%>%
+  pack_rows(start_row = 1, end_row = 1, group_label = "Sample A (Predicted Value: $4.5855)", bold = T)%>%
+  pack_rows(start_row = 2, end_row = 2, group_label = "Sample B (Predicted Value: $3.3452)", bold = T)%>%
+  pack_rows(start_row = 3, end_row = 3, group_label = "Sample C (Predicted Value: $3.3363)", bold = T)%>%
+  add_footnote(c("Each sample contains one pound of beans.", "Sample A: 776 beans; Sample B:1373 beans; Sample C: 982 beans."))
+```
