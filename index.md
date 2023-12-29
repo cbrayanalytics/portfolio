@@ -40,8 +40,11 @@ The following is for a team-based approach to an auto loan default prediction al
 [![Static Badge](https://img.shields.io/badge/Notebook-grey?logo=Anaconda&logoColor=white&labelColor=%2344A833)](https://github.com/cbrayanalytics/portfolio/blob/main/pythonprojects/data_processing.ipynb)
 
 #### Exploratory Data Analysis:
+[![Static Badge](https://img.shields.io/badge/Notebook-grey?logo=Anaconda&logoColor=white&labelColor=%2344A833)](https://github.com/cbrayanalytics/portfolio/blob/main/pythonprojects/EDA.ipynb)
 
 #### XGBoost Initial Testing:
+[![Static Badge](https://img.shields.io/badge/Notebook-grey?logo=Anaconda&logoColor=white&labelColor=%2344A833)](https://github.com/cbrayanalytics/portfolio/blob/main/pythonprojects/XGBClassification.ipynb)
 
 
+---
 [Project 1 Title](http://example.com)
