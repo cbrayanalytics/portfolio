@@ -31,8 +31,17 @@ A team-based approach to provide an accuracte classification algorithm for mixed
 
 ---
 
+
+### Auto Loan Default Prediction
+
 The following is for a team-based approach to an auto loan default prediction algorithm. Various techniques were used for data exploration, feature extraction, and model selection. The data contained roughly 40+ features as well as incomplete data for some columns. Normalization was performed on several features and models such as XGBoost and Support Vector Machines were compared for performance by using an 80/20, Train/Test split. 
 
+#### Data Preprocessing:
 [![Static Badge](https://img.shields.io/badge/Notebook-grey?logo=Anaconda&logoColor=white&labelColor=%2344A833)](https://github.com/cbrayanalytics/portfolio/blob/main/pythonprojects/data_processing.ipynb)
+
+#### Exploratory Data Analysis:
+
+#### XGBoost Initial Testing:
+
 
 [Project 1 Title](http://example.com)
