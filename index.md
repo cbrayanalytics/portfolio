@@ -40,14 +40,14 @@ The following is for a team-based approach to an auto loan default prediction al
 [![Static Badge](https://img.shields.io/badge/View_Notebook-grey?logo=Jupyter&logoColor=white&labelColor=%2344A833)](https://github.com/cbrayanalytics/portfolio/blob/main/pythonprojects/data_processing.ipynb)
 
 #### Exploratory Data Analysis:
-[![Static Badge](https://img.shields.io/badge/View_Notebook-grey?logo=Anaconda&logoColor=white&labelColor=%2344A833)](https://github.com/cbrayanalytics/portfolio/blob/main/pythonprojects/EDA.ipynb)
+[![Static Badge](https://img.shields.io/badge/View_Notebook-grey?logo=Jupyter&logoColor=white&labelColor=%2344A833)](https://github.com/cbrayanalytics/portfolio/blob/main/pythonprojects/EDA.ipynb)
 
 #### XGBoost Initial Testing:
-[![Static Badge](https://img.shields.io/badge/View_Notebook-grey?logo=Anaconda&logoColor=white&labelColor=%2344A833)](https://github.com/cbrayanalytics/portfolio/blob/main/pythonprojects/XGBClassification.ipynb)
+[![Static Badge](https://img.shields.io/badge/View_Notebook-grey?logo=Jupyter&logoColor=white&labelColor=%2344A833)](https://github.com/cbrayanalytics/portfolio/blob/main/pythonprojects/XGBClassification.ipynb)
 
 
 ### Twitter Sentiment Analysis
 
 A comprehensive analysis of 5,000 twitter posts that includes preprocessing, tokenization, feature reduction and classification using Stochastic Gradient Descent. Accuracy was measured using KFold Cross-Validation.
 
-[![Static Badge](https://img.shields.io/badge/View_Notebook-grey?logo=Anaconda&logoColor=white&labelColor=%2344A833)](https://github.com/cbrayanalytics/portfolio/blob/main/pythonprojects/sanders.ipynb)
+[![Static Badge](https://img.shields.io/badge/View_Notebook-grey?logo=Jupyter&logoColor=white&labelColor=%2344A833)](https://github.com/cbrayanalytics/portfolio/blob/main/pythonprojects/sanders.ipynb)
