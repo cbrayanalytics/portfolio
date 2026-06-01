@@ -103,7 +103,7 @@ header p {
 header img {
   border-radius: 4px;
   filter: grayscale(15%) contrast(1.02);
-  box-shadow: 0 1px 0 var(--rule), 0 12px 32px -16px rgba(26, 26, 26, 0.25);
+  box-shadow: 0 12px 32px -16px rgba(26, 26, 26, 0.25);
   margin-bottom: 18px;
   max-width: 220px;
 }

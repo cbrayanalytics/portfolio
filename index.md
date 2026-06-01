@@ -1,10 +1,4 @@
-# Portfolio
-
----
-
 ## R Projects
-
----
 
 ### Vole Skull Classification
 
@@ -32,9 +26,6 @@ A team-based approach to provide an accurate classification algorithm for mixed 
 
 
 ## Python Projects
-
----
-
 
 ### Auto Loan Default Prediction
 
