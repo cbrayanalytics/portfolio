@@ -12,6 +12,7 @@ Currently Critical Case Engineer @ Cloudian.
 ## Projects
 - **Vole Skull Classification** (R) — morphological classification of 199 vole skulls via cross-validated models
 - **Seed Analysis** (R) — team-based classification of mixed dry bean populations, evaluated by fiscal value
+- **Molecular Toxicity Classification** (R) — RFE-driven dimensionality reduction (1203 → 8 features) with Random Forest classification
 - **Auto Loan Default Prediction** (Python) — XGBoost vs. SVM on 40+ features with imbalanced classes
 - **Twitter Sentiment Analysis** (Python) — SGD classifier on 5,000 tweets, evaluated via K-fold CV
 

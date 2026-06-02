@@ -1,0 +1,257 @@
+---
+title: "Toxicity Analysis"
+author: "Casey Bray"
+date: "2022-11-25"
+output: pdf_document
+---
+
+Toxic Dataset: "https://archive-beta.ics.uci.edu/dataset/728/toxicity-2"
+
+```{r Libraries, echo=FALSE, warnings=FALSE}
+library('tidyverse') ## Data Manipulation.
+library("caret") ## RFE or 'Recursive Feature Elimination'.
+library("randomForest") ## To implement Random Forest Model.
+library("gridExtra") ## Plot multiple ggplot graphs side-by-side.
+library("ggplot2") ## Plotting package.
+```
+
+
+```{r Data}
+## Read in dataset to variable "toxic".
+toxic <- read.csv("toxicity_data.csv")
+
+## Create a backup of "toxic" dataset. 
+toxic_copy1 <- toxic
+```
+
+
+```{r Target Variable}
+## Quick review of target variable, "Class", shows that NonToxic is 2:1 to Toxic.
+toxic %>%
+  count(Class)
+```
+
+Due to the relative size of this dataset, 1204 variables, it is necessary to 
+do some sort of feature selection first to reduce the dataset to a consumable
+chunk of data.
+
+--------------------------------------------------------------------------------
+
+-- Recursive Feature Elimination:
+ Also called 'RFE', is an algorithm used to select features that accuractely 
+predict a 'target' variable in prediction models. RFE utilizes a backward 
+selection process to select features. The steps are as follows:
+
+  1. Builds model & calculates importance of all features(except 'target').
+  
+  2. Rank-orders features and removes ones with least importance one-by-one
+     based on model eval metrics(RMSE,accuracy,kappa).
+     
+  3. Repeats process until a <i>smaller</i> set of features is achieved. 
+  
+** Model can select ALL features.
+** Feature selection can also be based on model or criterion(e.g., accuracy).
+
+
+```{r Feature Selection}
+## First, we need to split data into train/test sets.
+sample <- sample(c(TRUE,FALSE), nrow(toxic), replace = TRUE, prob=c(0.7,0.3))
+train <- toxic[sample, ]
+test <- toxic[!sample, ]
+
+## Define our recursive feature elimination
+control_rfe = rfeControl(functions = rfFuncs, # random forest
+                      method = "repeatedcv", # repeated cv
+                      repeats = 5, # number of repeats
+                      number = 10) # number of folds
+
+set.seed(50) ## for reproducibility
+
+# Performing RFE, this may take some time
+result_rfe = rfe(x = train[,-1204], 
+                 y = as.factor(unlist(train[,1204])), 
+                 sizes = c(1:15),
+                 rfeControl = control_rfe)
+
+
+print(result_rfe)
+```
+
+```{r Selected Features, warning=FALSE}
+## Show our selected features.
+predictors(result_rfe)
+
+
+## Provide a visual version of the selected features. I have subsetted the 
+## results as the before graph was very difficult to interpret.
+plt1 <- ggplot(data = result_rfe, metric = "Accuracy") + xlim(0,25)
+plt2 <- ggplot(data = result_rfe, metric = "Kappa") + xlim(0,25) 
+
+grid.arrange(plt1,plt2,ncol=2,top="RFE Accuracy & Kappa Results")
+```
+
+As seen above, we decided to limit the features to ~15 variables. RFE, or 
+"Recursive Feature Elimination", selected 8 as it yields the highest 
+accuracy from cross-validation. This should greatly improve model interpretability
+in the future. 
+
+```{r Subset Data with Selected Features}
+## Let's first subset the data with our chosen features.
+final_toxic <- select(toxic,"MATS6c","MDEC.23","SpMax3_Bhm","ZMIC1","WTPT.5",
+                      "AATSC2e","GATS5c","ATSC3v","Class") 
+
+## Preview our new data.
+str(final_toxic)
+```
+
+--------------------------------------------------------------------------------
+
+Feature Exploration:
+
+```{r MATS6c}
+## MATS6c evaluation
+ggplot(final_toxic, aes(x=Class, y=MATS6c, fill=Class, trim=FALSE)) +
+  geom_violin(width=0.8) +
+  geom_boxplot(width=0.2,color='black') +
+  ggtitle("Violin plot of MATS6c by Class")
+
+## MDEC.23 evaluation
+ggplot(final_toxic, aes(x=Class, y=MDEC.23, fill=Class, trim=FALSE)) +
+  geom_violin(width=0.8) +
+  geom_boxplot(width=0.2,color='black') +
+  ggtitle("Violin plot of MDEC.23 by Class")
+
+## SpMax3_Bhm evaluation
+ggplot(final_toxic, aes(x=Class, y=SpMax3_Bhm, fill=Class, trim=FALSE)) +
+  geom_violin(width=0.8) +
+  geom_boxplot(width=0.2,color='black') +
+  ggtitle("Violin plot of SpMax3_Bhm by Class")
+
+## ZMIC1 evaluation
+ggplot(final_toxic, aes(x=Class, y=ZMIC1, fill=Class, trim=FALSE)) +
+  geom_violin(width=0.8) +
+  geom_boxplot(width=0.2,color='black') +
+  ggtitle("Violin plot of ZMIC1 by Class")
+
+## WTPT.5 evaluation
+ggplot(final_toxic, aes(x=Class, y=WTPT.5  , fill=Class, trim=FALSE)) +
+  geom_violin(width=0.8) +
+  geom_boxplot(width=0.2,color='black') +
+  ggtitle("Violin plot of WTPT.5   by Class")
+
+## AATSC2e evaluation
+ggplot(final_toxic, aes(x=Class, y=AATSC2e, fill=Class, trim=FALSE)) +
+  geom_violin(width=0.8) +
+  geom_boxplot(width=0.2,color='black') +
+  ggtitle("Violin plot of AATSC2e by Class")
+```
+-- MATS6c appears to have a much wider distribution compared to non-toxic. 
+However, median values appear to be quite similar. Although, Toxic median comes
+out just a shade higher! Neither show a normal distribution and have apparent 
+tails on the high end.
+
+
+-- MDEC.23 shows quite a visible difference between Toxic median and Non-Toxic 
+median! Toxic also shows a much more narrow distribution and fewer outliers.
+
+
+-- SpMax3_Bhm shows quite an interesting spread! The outliers are quite unusual 
+and very far from the IQR(Interquartile Range). Outliers aside, distribution 
+shows a very normalized shape for both classes. Toxic, however, has a lower 
+median with what appears to be a quite large Upper Quartile.
+
+
+-- ZMIC1 shows a very spread out distribution for both Classes. On a positive 
+note, Toxic shows what appears to be a very significantly different median from
+Non-Toxic. Toxic also presents a much larger lower quartile and significant 
+outliers.
+
+
+-- WTPT.5  appears to show similar medians for both classes. Toxic shows a larger 
+lower quartile while Non-Toxic shows a large Upper quartile. Both Classes have a
+very large distribution.
+
+
+-- AATSC2e shows both classes have a very narrow distrbution. Non-Toxic has a 
+slightly higher median value. Toxic has a very large outlier. However, we have
+no way to verify this is a typo or not. 
+
+
+--------------------------------------------------------------------------------
+
+Decision Tree:
+
+```{r Train/Test Split}
+train_control <- trainControl(method = "LOOCV")
+
+set.seed(42)
+sample <- sample(c(TRUE,FALSE), nrow(final_toxic), replace = TRUE, prob=c(0.7,0.3))
+train_toxic <- final_toxic[sample, ]
+test_toxic <- final_toxic[!sample, ]
+
+
+dim(train_toxic)
+dim(test_toxic)
+```
+
+
+```{r Random Forest}
+## Decision Tree using "Caret"
+toxic.tree = train(Class ~ ., 
+                  data=train_toxic, 
+                  method="rpart", 
+                  trControl = train_control)
+
+print(toxic.tree)
+
+
+toxic.pred <- predict(toxic.tree, newdata = test_toxic)
+
+cat("\nPrediction Table: ")
+table(toxic.pred, test_toxic$Class)
+
+cat("\nError Rate: ")
+round(mean(toxic.pred != test_toxic$Class),2)
+```
+
+```{r Tree Plot, warning=FALSE}
+suppressMessages(library(rattle))
+
+fancyRpartPlot(toxic.tree$finalModel)
+```
+
+--------------------------------------------------------------------------------
+
+Random Forest:
+
+```{r}
+set.seed(55)
+## Set our number of variables to be randomly collected
+mtries <- sqrt(ncol(train_toxic))
+grid <- expand.grid(.mtry=mtries)
+
+## Assign random forest model to variable.
+toxic.tree = train(Class ~ ., 
+                  data=train_toxic, 
+                  method="rf", 
+                  metric="Accuracy",
+                  tuneGrid = grid,
+                  trControl = train_control)
+
+print(toxic.tree)
+```
+
+```{r Forest Predictions}
+toxic.pred <- predict(toxic.tree, newdata = test_toxic)
+
+cat("\nPrediction Table: ")
+table(toxic.pred, test_toxic$Class)
+
+cat("\nError Rate: ")
+round(mean(toxic.pred != test_toxic$Class),2)
+
+
+```
+Random Forest reduces test error from 0.39 to 0.32 — a 7-percentage-point absolute improvement over the single Decision Tree baseline.
+
+----------------------------------------

@@ -25,6 +25,19 @@ A team-based approach to provide an accurate classification algorithm for mixed 
 
 
 
+### Molecular Toxicity Classification
+
+A binary classification of 171 chemical compounds (toxic vs. non-toxic) using molecular descriptors from the UCI toxicity-2 dataset. The full feature set contains 1,203 descriptors — Recursive Feature Elimination (RFE) with a random-forest backbone was used to reduce dimensionality before fitting Decision Tree and Random Forest models under leave-one-out cross-validation.
+
+**Results:** RFE reduced **1,203 features to 8** without loss of cross-validated accuracy. Random Forest reached **68% test accuracy** (Kappa = 0.22) on a 2:1 imbalanced target — a 7-point absolute improvement in error over the single-tree baseline (61%). The dimensionality reduction is the headline result: comparable predictive performance from <1% of the original feature space.
+
+[![Static Badge](https://img.shields.io/badge/View_R_Document-grey?logo=r&labelColor=%23276DC3)](R%20Projects/ToxicityAnalysis.html)
+
+[![Static Badge](https://img.shields.io/badge/View_on_Github-grey?logo=GitHub&labelColor=%23181717)](https://github.com/cbrayanalytics/portfolio/blob/main/R%20Projects/ToxicityAnalysis.Rmd)
+
+
+
+
 ## Python Projects
 
 ### Auto Loan Default Prediction
