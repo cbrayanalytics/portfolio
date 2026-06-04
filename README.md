@@ -15,6 +15,7 @@ Currently Critical Case Engineer @ Cloudian.
 - **Molecular Toxicity Classification** (R) — RFE-driven dimensionality reduction (1203 → 8 features) with Random Forest classification
 - **Auto Loan Default Prediction** (Python) — XGBoost vs. SVM on 40+ features with imbalanced classes
 - **Twitter Sentiment Analysis** (Python) — SGD classifier on 5,000 tweets, evaluated via K-fold CV
+- **Star Trek NLP** (Python) — text normalization pipeline + lemmatization vs. stemming comparison on episode dialogue
 
 ## Contact
 - LinkedIn: <https://www.linkedin.com/in/caseylbray/>

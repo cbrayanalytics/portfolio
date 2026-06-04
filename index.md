@@ -63,3 +63,12 @@ A comprehensive analysis of 5,000 twitter posts that includes preprocessing, tok
 **Results:** SGD classifier reached **average F1 = 0.77** across 10 folds after feature reduction (up from 0.69 on the raw pipeline), with per-fold accuracy ranging 78–84%.
 
 [![Static Badge](https://img.shields.io/badge/View_Notebook-grey?logo=Jupyter&logoColor=white&labelColor=%2344A833)](https://github.com/cbrayanalytics/portfolio/blob/main/pythonprojects/sanders.ipynb)
+
+
+### Star Trek NLP — Preprocessing and Frequency Analysis
+
+An exploratory NLP pipeline on dialogue from *Star Trek: Enterprise* scripts. Built a reusable text-normalization pipeline (punctuation, URL, HTML, contraction, and number-to-word handling), then ran a side-by-side comparison of **WordNet lemmatization** versus **Lancaster stemming** on the same tokenized corpus, followed by a per-episode frequency distribution.
+
+**Results:** Composed an 8-stage normalization pipeline reusable across NLP tasks. Lemmatization preserved interpretable dictionary forms; Lancaster stemming collapsed vocabulary aggressively but produced non-word artifacts (`hundr`, `fiftyon`) — a concrete demonstration of the readability/compression tradeoff. Frequency analysis surfaced principal-cast character names as the dominant per-episode tokens, matching the show's narrative structure.
+
+[![Static Badge](https://img.shields.io/badge/View_Notebook-grey?logo=Jupyter&logoColor=white&labelColor=%2344A833)](https://github.com/cbrayanalytics/portfolio/blob/main/pythonprojects/startrek_nlp.ipynb)
