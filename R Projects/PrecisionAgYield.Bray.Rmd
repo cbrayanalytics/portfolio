@@ -1,0 +1,262 @@
+---
+title: "Final Project 2"
+author: "Casey Bray"
+date: "8/2/2021"
+output:
+  pdf_document: default
+  html_document: default
+---
+# Introduction
+What we are trying to figure out is, if a specific region of this corn field was low yielding in 2018, was it because of a lower seeding rate or just a poor part of the field as indicated from the previous year.
+
+# Data
+The data is from harvesting a seeding over the course of four years. There is a total of six datasets, two of which are soybean harvests. The remaining four are corn seeding and harvest. The years chosen are from 2017-2020. The main variables choosen are Yield, from harvests, and AppliedRate, from seeding. Each yield data point also has a Latitude and Longitude location as well. 
+
+# Formula
+I choose to normalize the data by rank because it establishes a statistical rank of the Yield/AppliedRate data in order of importance and reduces the effect out outliers on the results. For example, in a specified set of values, if a majority are within a few points of each other and a the remainders are quite a few points away from the majority. Those that are more than a few points away will be given a lower ranking so as not to have an effect on the majority.
+
+$$y_{ij} = rank(r_{ij})\\$$
+Where $r$ replaces $y$, $_{i}$ refers to Yield/AppliedRate and $_{j}$ refers to Year. For each year $_{j}$, we will iterate through all of $_{i}$ values.
+
+#Algorithm
+
+*Standard datasets*
+For the 6 standard datasets I did a simple plot of latitude vs longitude with pch set to "." to examine the field as well as how the rows were done for each. Then I proceeded to divide each Latitude and Longitude value by 50 and apply ceiling to return the smallest integer value. Afterwards, I took each data value times 1000 and added the column to the result to get a cell value for the cell column. Following that I plotted each row vs column with cell to display the cells within each grid. Finally, I filtered the data set to only those cells with greater than 30 observations and plotted again to show the remaining grids. 
+
+To show a pairs plot for the standard data set. I aggregated each dataset by Yield/AppliedRate and cell by mean to form a smaller dataset with Yield/Applied rate and cell as the index. Finally, I applied all the casual comparison plots from professor Claussen's instructions.
+
+*normalization*
+To normalize each dataset i created a function that established a variable which applied rank to each variable in the Yield/AppliedRate column and stored it separately from the dataframe. Then i set the original dataframe column for Yield/Applied rate to the separate variable column with rank applied to preserve the original order. After that I applied the filter and aggregate functions from the standard dataset to get a normalized dataframe similar to the final standard dataframe with cell and Yield/AppliedRate. Then I applied a pairs plot to the normalized dataframe and casual comparison plots
+
+
+## Code
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(data.table)
+library(bnlearn)
+```
+
+```{r}
+
+#Function to add row, column and cell columns to dataset.
+cellfunc <- function(dat) {
+dat$row <- ceiling(dat$Latitude / 50)
+dat$column <- ceiling(dat$Longitude / 50)
+
+dat$cell <- dat$row * 1000 + dat$column
+
+return(dat)
+}
+
+# Function for Normalizing and aggregating Applied Rate from seeding datasets.
+normprep <- function(dat,nam){
+nam <-  as.data.frame(lapply(dat[5], rank))
+  dat$AppliedRate = nam$AppliedRate
+dat <- cellfunc(dat)
+dat <- dat %>% group_by(cell) %>% filter(n() > 30)
+dat <- aggregate(AppliedRate ~ cell, data = dat, FUN=mean)
+}
+
+# Function for Normalizing and aggregating by Yield from harvest datasets.
+normprep2 <- function(dat,nam){
+nam <-  as.data.frame(lapply(dat[5], rank))
+  dat$Yield = nam$Yield
+dat <- cellfunc(dat)
+dat <- dat %>% group_by(cell) %>% filter(n() > 30)
+dat <- aggregate(Yield ~ cell, data = dat, FUN=mean)
+}
+```
+
+
+
+```{r}
+# Read data files into R
+S17 <- read.csv("A 2017 Soybeans Harvest.csv", header = TRUE)
+CH18 <- read.csv("A 2018 Corn Harvest.csv",header = TRUE)
+CS18 <- read.csv("A 2018 Corn Seeding.csv", header = TRUE)
+SH19 <- read.csv("A 2019 Soybeans Harvest.csv", header = TRUE)
+CH20 <- read.csv("A 2020 Corn Harvest.csv", header = TRUE)
+CS20 <- read.csv("A 2020 Corn Seeding.csv", header = TRUE)
+
+
+# Plot 1
+plot(Latitude ~ Longitude,data=S17,pch = ".",main = 'Soybean Harvest 17')
+abline(h=1:12*50,v=1:20*50,col='red')
+
+plot(Latitude ~ Longitude,data=CS18,pch = ".",main = 'Corn Seed 18')
+abline(h=1:12*50,v=1:20*50,col='red')
+
+plot(Latitude ~ Longitude,data=CH18,pch = ".",main = 'Corn Harvest 18')
+abline(h=1:12*50,v=1:20*50,col='red')
+
+plot(Latitude ~ Longitude,data=SH19,pch = ".",main = 'Soybean Harvest 19')
+abline(h=1:12*50,v=1:20*50,col='red')
+
+plot(Latitude ~ Longitude,data=CS20,pch = ".",main = 'Corn Seed 20')
+abline(h=1:12*50,v=1:20*50,col='red')
+
+plot(Latitude ~ Longitude,data=CH20,pch = ".",main = 'Corn Harvest 20')
+abline(h=1:12*50,v=1:20*50,col='red')
+
+#Add Row, Column and Cell to each dataframe 
+CH18 <- cellfunc(CH18)
+CH20 <- cellfunc(CH20)
+CS18 <- cellfunc(CS18)
+CS20 <- cellfunc(CS20)
+S17 <- cellfunc(S17)
+SH19 <- cellfunc(SH19)
+
+#Plot dataframe with grid and cell
+plot(row ~ column,data=S17, main='Soybean Harvest 17 W/cell')
+abline(h=1:12+0.5,v=1:20+0.5,col='red')
+
+plot(row ~ column,data=CS18, main='Corn Seed 18 W/cell')
+abline(h=1:12+0.5,v=1:20+0.5,col='red')
+
+plot(row ~ column,data=CH18, main='Corn Harvest 18 W/cell')
+abline(h=1:12+0.5,v=1:20+0.5,col='red')
+
+plot(row ~ column,data=SH19, main='Soybean Harvest 19 W/cell')
+abline(h=1:12+0.5,v=1:20+0.5,col='red')
+
+plot(row ~ column,data=CS20, main='Corn Seed 20 W/cell')
+abline(h=1:12+0.5,v=1:20+0.5,col='red')
+
+plot(row ~ column,data=CH20, main='Corn Harvest 20 W/cell')
+abline(h=1:12+0.5,v=1:20+0.5,col='red')
+
+# Apply filter to remove cells with less than 30 observations
+S7 <- S17 %>% group_by(cell) %>% filter(n() > 30)
+CS8 <- CS18 %>% group_by(cell) %>% filter(n() > 30)
+CH8 <- CH18 %>% group_by(cell) %>% filter(n() > 30)
+SH9 <- SH19 %>% group_by(cell) %>% filter(n() > 30)
+CS2 <- CS20 %>% group_by(cell) %>% filter(n() > 30)
+CH2 <- CH20 %>% group_by(cell) %>% filter(n() > 30)
+
+#obs30 <- aggregate(data = S7, Yield ~ cell, function(x) (unique(x)))
+
+# Filtered plot with cells
+plot(row ~ column,data=S7, main='Soybean Harvest 17 (OBS > 30)')
+abline(h=1:12+0.5,v=1:20+0.5,col='red')
+
+plot(row ~ column,data=CS8, main='Corn Seed 18 (OBS > 30)')
+abline(h=1:12+0.5,v=1:20+0.5,col='red')
+
+plot(row ~ column,data=CH8, main='Corn Harvest 18 (OBS > 30)')
+abline(h=1:12+0.5,v=1:20+0.5,col='red')
+
+plot(row ~ column,data=SH9, main='Soybean Harvest 19 (OBS > 30)')
+abline(h=1:12+0.5,v=1:20+0.5,col='red')
+
+plot(row ~ column,data=CS2, main='Corn Seed 20 (OBS > 30)')
+abline(h=1:12+0.5,v=1:20+0.5,col='red')
+
+plot(row ~ column,data=CH2, main='Corn Harvest 20 (OBS > 30)')
+abline(h=1:12+0.5,v=1:20+0.5,col='red')
+
+# Aggregate each dataframe by AppliedRate/Yield and cell by mean.
+S7 <- aggregate(Yield ~ cell, data = S7, FUN=mean)
+colnames(S7)[2] = 'Y17'
+CS8 <- aggregate(AppliedRate ~ cell, data = CS8, FUN=mean)
+colnames(CS8)[2] = 'AR18'
+CH8 <- aggregate(Yield ~ cell, data = CH8, FUN=mean)
+colnames(CH8)[2] = 'Y18'
+SH9 <- aggregate(Yield ~ cell, data = SH9, FUN=mean)
+colnames(SH9)[2] = 'Y19'
+CS2 <- aggregate(AppliedRate ~ cell, data = CS2, FUN=mean)
+colnames(CS2)[2] = 'AR20'
+CH2 <- aggregate(Yield ~ cell, data = CH2, FUN=mean)
+colnames(CH2)[2] = 'Y20'
+
+# Combine each dataframe with AppliedRate/Yield into one.
+Combined.dat <- Reduce(merge, list(S7,CS8,CH8,SH9,CS2,CH2))
+```
+
+
+```{r}
+# Plot pairs plot.
+pairs(Combined.dat)
+
+# Casual Comparison plots.
+modela.dag <-model2network("[Y17][AR18|Y17][Y18|AR18:Y17]")
+fit1 = bn.fit(modela.dag, Combined.dat[,c('Y17','AR18','Y18')])
+# fit1
+strengtha <- arc.strength(modela.dag, Combined.dat[,c('Y17','AR18','Y18')])
+strength.plot(modela.dag, strengtha)
+
+modelb.dag <- model2network("[Y19][AR20|Y19][Y20|AR20:Y19]")
+fit2 = bn.fit(modelb.dag, Combined.dat[,c('Y19','AR20','Y20')])
+# fit2
+strengthb <- arc.strength(modelb.dag, Combined.dat[,c('Y19','AR20','Y20')])
+strength.plot(modelb.dag, strengthb)
+
+model1.dag <- model2network("[Y17][AR18|Y17][Y18|AR18:Y17][Y19|Y17:AR18:Y18][AR20|Y19][Y20|AR20:Y19]")
+fit3 = bn.fit(model1.dag, Combined.dat[,c('Y17','AR18','Y18','Y19','AR20','Y20')])
+# fit3
+strength1 <- arc.strength(model1.dag, Combined.dat[,c('Y17','AR18','Y18','Y19','AR20','Y20')])
+strength.plot(model1.dag, strength1)
+
+```
+
+```{r}
+# Reread data for Normalization
+N_S17 <- read.csv("A 2017 Soybeans Harvest.csv", header = TRUE)
+N_CH18 <- read.csv("A 2018 Corn Harvest.csv",header = TRUE)
+N_CS18 <- read.csv("A 2018 Corn Seeding.csv", header = TRUE)
+N_SH19 <- read.csv("A 2019 Soybeans Harvest.csv", header = TRUE)
+N_CH20 <- read.csv("A 2020 Corn Harvest.csv", header = TRUE)
+N_CS20 <- read.csv("A 2020 Corn Seeding.csv", header = TRUE)
+
+# Normalize data through normprep functions.
+N_S17 <- normprep2(N_S17,normy17)
+  colnames(N_S17)[2] = 'Y17'
+N_CS18 <- normprep(N_CS18,norm18)
+  colnames(N_CS18)[2] = 'AR18'
+N_CS20 <- normprep(N_CS20,norm20)
+  colnames(N_CS20)[2] = 'AR20'
+N_CH18 <- normprep2(N_CH18,normY18)
+  colnames(N_CH18)[2] = 'Y18'
+N_SH19 <- normprep2(N_SH19,normy19)
+  colnames(N_SH19)[2] = 'Y19'
+N_CH20 <- normprep2(N_CH20,normy20)
+  colnames(N_CH20)[2] = 'Y20'
+
+# Combine each normalized dataframe with AppliedRate/Yield into one.
+norm.dat <- Reduce(merge, list(N_S17,N_CS18,N_CH18,N_SH19,N_CS20,N_CH20))
+```
+
+
+```{r}
+# Normalized pairs plot.
+pairs(norm.dat)
+
+# Casual Comparison plots for normalized data.
+modelan.dag <-model2network("[Y17][AR18|Y17][Y18|AR18:Y17]")
+fit1n = bn.fit(modelan.dag, norm.dat[,c('Y17','AR18','Y18')])
+# fit1
+strengthan <- arc.strength(modela.dag, norm.dat[,c('Y17','AR18','Y18')])
+strength.plot(modela.dag, strengthan)
+
+modelbn.dag <- model2network("[Y19][AR20|Y19][Y20|AR20:Y19]")
+fit2n = bn.fit(modelbn.dag, norm.dat[,c('Y19','AR20','Y20')])
+# fit2
+strengthbn <- arc.strength(modelbn.dag, norm.dat[,c('Y19','AR20','Y20')])
+strength.plot(modelbn.dag, strengthbn)
+
+model1n.dag <- model2network("[Y17][AR18|Y17][Y18|AR18:Y17][Y19|Y17:AR18:Y18][AR20|Y19][Y20|AR20:Y19]")
+fit3n = bn.fit(model1n.dag, norm.dat[,c('Y17','AR18','Y18','Y19','AR20','Y20')])
+# fit3
+strength1n <- arc.strength(model1n.dag, norm.dat[,c('Y17','AR18','Y18','Y19','AR20','Y20')])
+strength.plot(model1n.dag, strength1n)
+```
+
+## Conclusion
+First off, I noticed that in the standard dataset plots, the outliers were located along the edge of the fields where I am assuming that the soil quality wasn't that good or the crops just didn't take well there. Otherwise, the observations throughout each section were quite a fair amount. From Casual comparison on the Standard datasets i can ascertain that Yield 17 had strong correlations with Applied Rate from 18, but not the yield. This tells me that the seeding rate has a lot to do with how the yield will come out.The normalized plot suggests correlations from yield to AppliedRate to yield are strong which suggests seeding as well. The pairs plot displays a positive correlation throughout everything. I think that the weak correlation from seeding to yield in 18 may have to do with precipitation or wildlife but that data wasnt included and that is my best guess.
+
+The other plot that displays 18 to 19 shows strong correlation between AppliedRate and Yield and the final plot with all six datasets show a strong correlation of Applied Rate to Yield throughout a majority of the datasets both standard and normalized. Yield to Yield for each year generally shows a weak correlation on both standard and normalized. To me, this only confirms my initial assumption that seeding has a lot to do with how the yield comes out and not the quality of soil. The choice to rotate crop types is wise because different plants leave different nutrients in the soil at the end of the year which may benefit the growth of crops the next year. 
+
+However, I might be a bit biased at this because I spent most of my summers on a farm and my grandfather was always adamant about rotating crop types each year because it kept the soil in good shape for a in long time. He also stated that pesticides can have an affect on the quality of soil(which we discussed earlier this semester). From seeing the outcome each year between corn and soybeans I would say that seeding has a lot to do with crop outcome for the year. I would suggest seeding more in low yield areas to allow a greater chance for growth, or modifying low-lying areas to keep water from drowning crops.
+
+

@@ -38,6 +38,19 @@ A binary classification of 171 chemical compounds (toxic vs. non-toxic) using mo
 
 
 
+### Precision Agriculture Yield Analysis
+
+A spatial causal analysis of four years (2017–2020) of GPS yield-monitor data from corn and soybean fields, asking a concrete agronomic question: when a region of the field yields poorly, is it due to a lower seeding rate or just inherently poor ground? Hundreds of thousands of geotagged harvest and seeding points across six datasets were binned into a 50×50 coordinate grid, sparse cells (<30 observations) were filtered out, and per-cell mean **Yield** and **Applied Seeding Rate** were aggregated and merged across years. **Bayesian network structure modeling** (`bnlearn`) with arc-strength scoring was then used to compare the causal influence of prior-year yield versus applied seeding rate on subsequent-year yield — repeated on rank-normalized data to suppress edge-of-field outliers.
+
+**Results:** Across both raw and rank-normalized networks, **applied seeding rate showed strong arc strength to subsequent yield, while year-over-year yield→yield links were consistently weak** — evidence that seeding rate, not inherent field quality, is the dominant driver of yield. Outliers localized to field edges (poorer soil / crop establishment), and the one weak seeding→yield year (2018) was attributed to unmeasured factors like precipitation or wildlife.
+
+[![Static Badge](https://img.shields.io/badge/View_Report-grey?logo=adobeacrobatreader&logoColor=white&labelColor=%23EC1C24)](R%20Projects/PrecisionAgYield.Bray.pdf)
+
+[![Static Badge](https://img.shields.io/badge/View_on_Github-grey?logo=GitHub&labelColor=%23181717)](https://github.com/cbrayanalytics/portfolio/blob/main/R%20Projects/PrecisionAgYield.Bray.Rmd)
+
+
+
+
 ## Python Projects
 
 ### Auto Loan Default Prediction
