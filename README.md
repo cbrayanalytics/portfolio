@@ -17,6 +17,7 @@ Currently Critical Case Engineer @ Cloudian.
 - **Auto Loan Default Prediction** (Python) — XGBoost vs. SVM on 40+ features with imbalanced classes
 - **Twitter Sentiment Analysis** (Python) — SGD classifier on 5,000 tweets, evaluated via K-fold CV
 - **Star Trek NLP** (Python) — text normalization pipeline + lemmatization vs. stemming comparison on episode dialogue
+- **Salary Analysis of Data-Related Jobs** (Tableau) — 7-view interactive dashboard on 27,741 visa wage filings with cost-of-living adjustment
 
 ## Contact
 - LinkedIn: <https://www.linkedin.com/in/caseylbray/>

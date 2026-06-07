@@ -85,3 +85,18 @@ An exploratory NLP pipeline on dialogue from *Star Trek: Enterprise* scripts. Bu
 **Results:** Composed an 8-stage normalization pipeline reusable across NLP tasks. Lemmatization preserved interpretable dictionary forms; Lancaster stemming collapsed vocabulary aggressively but produced non-word artifacts (`hundr`, `fiftyon`) — a concrete demonstration of the readability/compression tradeoff. Frequency analysis surfaced principal-cast character names as the dominant per-episode tokens, matching the show's narrative structure.
 
 [![Static Badge](https://img.shields.io/badge/View_Notebook-grey?logo=Jupyter&logoColor=white&labelColor=%2344A833)](https://github.com/cbrayanalytics/portfolio/blob/main/pythonprojects/startrek_nlp.ipynb)
+
+
+
+
+## Data Visualization
+
+### Salary Analysis of Data-Related Jobs (Tableau)
+
+A seven-view interactive Tableau dashboard examining compensation for four data-related roles — business analyst, data analyst, data scientist, and software engineer — among **27,741** Green Card and H1B visa filings (2008–2015, U.S. Office of Foreign Labor Certification data). Views progress from headline trends (median paid wage per year by job title and visa class) into compliance and fairness analysis: difference between paid and *prevailing* wage, paid wage adjusted for state cost-of-living, and top states and companies by adjusted pay — all linked by interactive filters for self-service exploration.
+
+**Results:** Surfaced a **cost-of-living-adjusted** view that reorders the "best-paying" states away from the obvious coastal hubs, and flagged specific large employers (e.g. IBM, Google, LinkedIn) that paid below the prevailing wage at least five times — turning a raw salary table into an interpretable equity narrative.
+
+[![Static Badge](https://img.shields.io/badge/View_Dashboard-grey?logo=adobeacrobatreader&logoColor=white&labelColor=%23EC1C24)](Tableau%20Projects/SalaryAnalysis.Bray.pdf)
+
+[![Static Badge](https://img.shields.io/badge/View_on_Github-grey?logo=GitHub&labelColor=%23181717)](https://github.com/cbrayanalytics/portfolio/blob/main/Tableau%20Projects/SalaryAnalysis.Bray.twb)
