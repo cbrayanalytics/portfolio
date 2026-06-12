@@ -1,3 +1,17 @@
+## Bridging data infrastructure and analytics
+
+Data professional with 4+ years operating Linux and distributed-storage systems — Cassandra, Redis, AWS S3 — at petabyte scale, paired with an M.S. in Data Analytics and hands-on Python/R modeling. I keep data systems reliable *and* turn the data they hold into decisions.
+
+#### Data & Analytics
+Python · R · SAS · SQL · pandas · scikit-learn · statistical modeling · machine learning · Tableau
+
+#### Infrastructure & Engineering
+Linux · Spark · Hadoop · Hive · Cassandra · Redis · AWS S3 · Ansible · Terraform · shell scripting
+
+[![Download Resume](https://img.shields.io/badge/Download_Résumé-PDF-grey?logo=adobeacrobatreader&logoColor=white&labelColor=%237a1f1f)](assets/Casey_Bray_Resume.pdf)
+
+---
+
 ## R Projects
 
 ### Vole Skull Classification
