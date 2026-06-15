@@ -95,7 +95,7 @@ The following is for a team-based approach to an auto loan default prediction al
 
 ### Twitter Sentiment Analysis
 
-<a class="proj-thumb" href="https://github.com/cbrayanalytics/portfolio/blob/main/pythonprojects/sanders.ipynb"><img src="assets/img/twitter-sentiment.png" alt="Twitter sentiment analysis — SGD classifier per-class F1 and accuracy"></a>
+<a class="proj-thumb" href="https://github.com/cbrayanalytics/portfolio/blob/main/pythonprojects/sanders.ipynb"><img src="assets/img/twitter-sentiment.png" alt="Twitter sentiment analysis — SGD classifier per-class and macro F1 on held-out test"></a>
 
 A comprehensive analysis of 5,000 twitter posts that includes preprocessing, tokenization, feature reduction and classification using Stochastic Gradient Descent. Accuracy was measured using KFold Cross-Validation.
 
