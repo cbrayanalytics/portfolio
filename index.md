@@ -16,6 +16,8 @@ Linux · Spark · Hadoop · Hive · Cassandra · Redis · AWS S3 · Ansible · T
 
 ### Vole Skull Classification
 
+<a class="proj-thumb" href="R%20Projects/Project_1.Bray.html"><img src="assets/img/vole.png" alt="Vole skull classification — height vs width scatter colored by species"></a>
+
 A statistical comparative analysis of Vole species using various morphological measurements of Vole skulls from a sample of 89 specimens. Multiple classification models were compared to predict 199 unclassified vole skulls using cross validation to determine the final accuracy.
 
 **Results:** Final GLM achieved **91% accuracy** (Kappa = 0.83) under 10-fold CV. Classified 117 of 199 unknowns as *multiplex* and 82 as *subterraneus*.
@@ -26,6 +28,8 @@ A statistical comparative analysis of Vole species using various morphological m
 
 
 ### Seed Analysis
+
+<a class="proj-thumb" href="R%20Projects/FinalProject.html"><img src="assets/img/seed.png" alt="Dry bean seed analysis — feature pairs plot by class"></a>
 
 A team-based approach to provide an accurate classification algorithm for mixed populations of dry bean seeds in central Asian countries. A comprehensive feature analysis was performed to provide the most beneficial features to be used in classification models. Multiple models were utilized for this project and accuracy was determined by determining the fiscal value of a subset from the data supplied.
 
@@ -41,6 +45,8 @@ A team-based approach to provide an accurate classification algorithm for mixed 
 
 ### Molecular Toxicity Classification
 
+<a class="proj-thumb" href="R%20Projects/ToxicityAnalysis.html"><img src="assets/img/toxicity.png" alt="Molecular toxicity classification — decision tree on molecular descriptors"></a>
+
 A binary classification of 171 chemical compounds (toxic vs. non-toxic) using molecular descriptors from the UCI toxicity-2 dataset. The full feature set contains 1,203 descriptors — Recursive Feature Elimination (RFE) with a random-forest backbone was used to reduce dimensionality before fitting Decision Tree and Random Forest models under leave-one-out cross-validation.
 
 **Results:** RFE reduced **1,203 features to 8** without loss of cross-validated accuracy. Random Forest reached **68% test accuracy** (Kappa = 0.22) on a 2:1 imbalanced target — a 7-point absolute improvement in error over the single-tree baseline (61%). The dimensionality reduction is the headline result: comparable predictive performance from <1% of the original feature space.
@@ -53,6 +59,8 @@ A binary classification of 171 chemical compounds (toxic vs. non-toxic) using mo
 
 
 ### Precision Agriculture Yield Analysis
+
+<a class="proj-thumb" href="R%20Projects/PrecisionAgYield.Bray.pdf"><img src="assets/img/precision-ag.png" alt="Precision agriculture — Bayesian network of seeding rate and year-over-year yield"></a>
 
 A spatial causal analysis of four years (2017–2020) of GPS yield-monitor data from corn and soybean fields, asking a concrete agronomic question: when a region of the field yields poorly, is it due to a lower seeding rate or just inherently poor ground? Hundreds of thousands of geotagged harvest and seeding points across six datasets were binned into a 50×50 coordinate grid, sparse cells (<30 observations) were filtered out, and per-cell mean **Yield** and **Applied Seeding Rate** were aggregated and merged across years. **Bayesian network structure modeling** (`bnlearn`) with arc-strength scoring was then used to compare the causal influence of prior-year yield versus applied seeding rate on subsequent-year yield — repeated on rank-normalized data to suppress edge-of-field outliers.
 
@@ -68,6 +76,8 @@ A spatial causal analysis of four years (2017–2020) of GPS yield-monitor data 
 ## Python Projects
 
 ### Auto Loan Default Prediction
+
+<a class="proj-thumb" href="https://github.com/cbrayanalytics/portfolio/blob/main/pythonprojects/XGBClassification.ipynb"><img src="assets/img/auto-loan.png" alt="Auto loan default prediction — XGBoost feature importance"></a>
 
 The following is for a team-based approach to an auto loan default prediction algorithm. Various techniques were used for data exploration, feature extraction, and model selection. The data contained roughly 40+ features as well as incomplete data for some columns. Normalization was performed on several features and models such as XGBoost and Support Vector Machines were compared for performance by using an 80/20, Train/Test split.
 
@@ -85,6 +95,8 @@ The following is for a team-based approach to an auto loan default prediction al
 
 ### Twitter Sentiment Analysis
 
+<a class="proj-thumb" href="https://github.com/cbrayanalytics/portfolio/blob/main/pythonprojects/sanders.ipynb"><img src="assets/img/twitter-sentiment.png" alt="Twitter sentiment analysis — SGD classifier per-class F1 and accuracy"></a>
+
 A comprehensive analysis of 5,000 twitter posts that includes preprocessing, tokenization, feature reduction and classification using Stochastic Gradient Descent. Accuracy was measured using KFold Cross-Validation.
 
 **Results:** SGD classifier reached **average F1 = 0.77** across 10 folds after feature reduction (up from 0.69 on the raw pipeline), with per-fold accuracy ranging 78–84%.
@@ -93,6 +105,8 @@ A comprehensive analysis of 5,000 twitter posts that includes preprocessing, tok
 
 
 ### Star Trek NLP — Preprocessing and Frequency Analysis
+
+<a class="proj-thumb" href="https://github.com/cbrayanalytics/portfolio/blob/main/pythonprojects/startrek_nlp.ipynb"><img src="assets/img/star-trek-nlp.png" alt="Star Trek NLP — top character-name token frequencies"></a>
 
 An exploratory NLP pipeline on dialogue from *Star Trek: Enterprise* scripts. Built a reusable text-normalization pipeline (punctuation, URL, HTML, contraction, and number-to-word handling), then ran a side-by-side comparison of **WordNet lemmatization** versus **Lancaster stemming** on the same tokenized corpus, followed by a per-episode frequency distribution.
 
@@ -106,6 +120,8 @@ An exploratory NLP pipeline on dialogue from *Star Trek: Enterprise* scripts. Bu
 ## Data Visualization
 
 ### Salary Analysis of Data-Related Jobs (Tableau)
+
+<a class="proj-thumb" href="Tableau%20Projects/SalaryAnalysis.Bray.pdf"><img src="assets/img/salary-tableau.png" alt="Salary analysis Tableau dashboard — median paid wage trends by job title"></a>
 
 A seven-view interactive Tableau dashboard examining compensation for four data-related roles — business analyst, data analyst, data scientist, and software engineer — among **27,741** Green Card and H1B visa filings (2008–2015, U.S. Office of Foreign Labor Certification data). Views progress from headline trends (median paid wage per year by job title and visa class) into compliance and fairness analysis: difference between paid and *prevailing* wage, paid wage adjusted for state cost-of-living, and top states and companies by adjusted pay — all linked by interactive filters for self-service exploration.
 

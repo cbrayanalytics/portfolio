@@ -63,6 +63,28 @@ h3 {
   color: var(--ink);
   margin-top: 36px;
   font-weight: 600;
+  clear: both; /* each project heading starts below the prior thumbnail float */
+}
+
+/* Project thumbnails — left-floated card linking to the full view */
+.proj-thumb {
+  float: left;
+  width: 200px;
+  margin: 6px 20px 10px 0;
+  text-decoration: none;
+  border: 0;
+}
+
+.proj-thumb img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+}
+
+.proj-thumb:hover img {
+  border-color: var(--accent);
 }
 
 h4 {
@@ -199,4 +221,5 @@ section p img:hover {
   }
   h1 { font-size: 32px; }
   h2 { font-size: 22px; }
+  .proj-thumb { float: none; width: 100%; max-width: 320px; margin: 0 0 14px; }
 }
