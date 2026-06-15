@@ -121,7 +121,7 @@ An exploratory NLP pipeline on dialogue from *Star Trek: Enterprise* scripts. Bu
 
 ### Salary Analysis of Data-Related Jobs (Tableau)
 
-<a class="proj-thumb" href="Tableau%20Projects/SalaryAnalysis.Bray.pdf"><img src="assets/img/salary-tableau.png" alt="Salary analysis Tableau dashboard — median paid wage trends by job title"></a>
+<a class="proj-thumb" href="Tableau%20Projects/SalaryAnalysis.Bray.pdf"><img src="assets/img/salary-tableau.png" alt="Salary analysis Tableau dashboard — cost-of-living-adjusted wages by state and job title"></a>
 
 A seven-view interactive Tableau dashboard examining compensation for four data-related roles — business analyst, data analyst, data scientist, and software engineer — among **27,741** Green Card and H1B visa filings (2008–2015, U.S. Office of Foreign Labor Certification data). Views progress from headline trends (median paid wage per year by job title and visa class) into compliance and fairness analysis: difference between paid and *prevailing* wage, paid wage adjusted for state cost-of-living, and top states and companies by adjusted pay — all linked by interactive filters for self-service exploration.
 
