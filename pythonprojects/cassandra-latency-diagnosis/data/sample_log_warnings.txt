@@ -1,0 +1,3 @@
+WARN  [ReadStage-99] 2026-06-17 04:04:54,670 ReadCommand.java:605 - Read 100 live rows and 19800 tombstone cells for query SELECT * FROM demo.events WHERE device_id = 1 LIMIT 100 ALLOW FILTERING; token -4069959284402364209 (see tombstone_warn_threshold)
+WARN  [ReadStage-9] 2026-06-17 04:05:01,623 ReadCommand.java:605 - Read 100 live rows and 19800 tombstone cells for query SELECT * FROM demo.events WHERE device_id = 2 LIMIT 100 ALLOW FILTERING; token -3248873570005575792 (see tombstone_warn_threshold)
+WARN  [ReadStage-9] 2026-06-17 04:05:01,516 ReadCommand.java:605 - Read 100 live rows and 19800 tombstone cells for query SELECT * FROM demo.events WHERE device_id = 10 LIMIT 100 ALLOW FILTERING; token -6715243485458697746 (see tombstone_warn_threshold)

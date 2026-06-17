@@ -1,0 +1,23 @@
+lowercaseOutputName: true
+lowercaseOutputLabelNames: true
+rules:
+  # Client read/write request latency percentiles (microseconds)
+  - pattern: 'org.apache.cassandra.metrics<type=ClientRequest, scope=(\w+), name=Latency><>(\d+)thPercentile'
+    name: cassandra_clientrequest_latency_p$2
+    labels:
+      operation: "$1"
+  # Per-table tombstones scanned per read (histogram percentiles)
+  - pattern: 'org.apache.cassandra.metrics<type=Table, keyspace=(\w+), scope=(\w+), name=TombstoneScannedHistogram><>(\d+)thPercentile'
+    name: cassandra_table_tombstones_scanned_p$3
+    labels:
+      keyspace: "$1"
+      table: "$2"
+  # Live SSTable count per table
+  - pattern: 'org.apache.cassandra.metrics<type=Table, keyspace=(\w+), scope=(\w+), name=LiveSSTableCount><>Value'
+    name: cassandra_table_live_sstable_count
+    labels:
+      keyspace: "$1"
+      table: "$2"
+  # Pending compactions (cluster-wide)
+  - pattern: 'org.apache.cassandra.metrics<type=Compaction, name=PendingTasks><>Value'
+    name: cassandra_compaction_pending_tasks

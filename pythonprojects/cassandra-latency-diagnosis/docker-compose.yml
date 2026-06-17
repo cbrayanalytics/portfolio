@@ -1,0 +1,62 @@
+services:
+  cassandra:
+    image: cassandra:4.1
+    container_name: cass-latency-demo
+    ports:
+      - "9042:9042"   # CQL native
+      - "7199:7199"   # JMX (used by nodetool)
+      - "7070:7070"   # Prometheus metrics (JMX exporter javaagent)
+    environment:
+      - CASSANDRA_CLUSTER_NAME=latency-demo
+      - CASSANDRA_NUM_TOKENS=1
+      - MAX_HEAP_SIZE=1G
+      - HEAP_NEWSIZE=200M
+      # Load the Prometheus JMX exporter as an in-process javaagent on :7070
+      - JVM_EXTRA_OPTS=-javaagent:/opt/jmx/jmx_prometheus_javaagent.jar=7070:/opt/jmx/cassandra.yml
+    volumes:
+      - cass-data:/var/lib/cassandra
+      - ./observability/jmx:/opt/jmx:ro
+    healthcheck:
+      test: ["CMD-SHELL", "nodetool status | grep -q '^UN'"]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 90s
+
+  # --- Phase B: observability stack (only needed to capture the Grafana hero image) ---
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    container_name: cass-latency-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+      - cassandra
+
+  grafana:
+    image: grafana/grafana:11.2.0
+    container_name: cass-latency-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_DEFAULT_THEME=dark
+      - GF_RENDERING_SERVER_URL=http://renderer:8081/render
+      - GF_RENDERING_CALLBACK_URL=http://grafana:3000/
+    volumes:
+      - ./observability/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus
+
+  renderer:
+    image: grafana/grafana-image-renderer:3.11.5
+    container_name: cass-latency-renderer
+    ports:
+      - "8081:8081"
+
+volumes:
+  cass-data:

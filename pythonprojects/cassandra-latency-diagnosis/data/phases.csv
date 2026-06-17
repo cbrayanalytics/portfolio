@@ -1,0 +1,4 @@
+phase,t_start,t_end
+baseline,0,60
+fault,60,180
+recovery,180,240

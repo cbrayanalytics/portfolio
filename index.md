@@ -14,6 +14,22 @@ Linux · Spark · Hadoop · Hive · Cassandra · Redis · AWS S3 · Ansible · T
 
 ## Selected Work
 
+<a class="proj-hero" href="https://github.com/cbrayanalytics/portfolio/blob/main/pythonprojects/cassandra-latency-diagnosis/latency_diagnosis.ipynb"><img src="assets/img/cassandra-latency-hero.png" alt="Grafana dashboard — Cassandra read p99 latency spiking alongside tombstones-scanned-per-read during the fault, then recovering as compaction drops the SSTable count"></a>
+
+### Diagnosing Distributed-Storage Latency from Metrics & Logs
+
+**A Cassandra read-latency regression traced — from client p99 down to a single log line — to a tombstone buildup, then fixed with compaction.**
+{:.proj-headline}
+
+A self-contained, reproducible case study in the infrastructure↔analytics bridge. A single-node Apache Cassandra cluster (Docker) is driven by a Python workload that deliberately injects a production-style fault — mass deletes that leave every read scanning tens of thousands of **tombstones** to return a handful of live rows — while capturing client latency, `nodetool` table/compaction metrics, and the server log. The diagnosis correlates three independent signals — client latency, tombstones-scanned-per-read, and the `tombstone cells` WARN — to localize a "the database is slow" page to one specific storage-engine behavior, then confirms the fix the same way.
+
+**Results:** Reproduced a clean regression — read **p99 jumped ~6× (≈7 → 45 ms), median latency ~4×, and throughput fell ~4× (≈210 → 50 reads/s)** — with each read scanning **~19,800 tombstones to return 100 live rows** (peak ~20,500 per read), confirmed by thousands of `tombstone cells` WARNs in the server log. A major compaction purged the tombstones and returned p99 to its ~7 ms baseline, confirming root cause. The whole incident is visualized live in **Grafana** (Prometheus + JMX exporter) and is fully reproducible from the committed workload script and captured data.
+
+[![Static Badge](https://img.shields.io/badge/View_Notebook-grey?logo=Jupyter&logoColor=white&labelColor=%2344A833)](https://github.com/cbrayanalytics/portfolio/blob/main/pythonprojects/cassandra-latency-diagnosis/latency_diagnosis.ipynb)
+
+[![Static Badge](https://img.shields.io/badge/View_on_Github-grey?logo=GitHub&labelColor=%23181717)](https://github.com/cbrayanalytics/portfolio/tree/main/pythonprojects/cassandra-latency-diagnosis)
+
+
 <a class="proj-hero" href="R%20Projects/PrecisionAgYield.Bray.pdf"><img src="assets/img/precision-ag-hero.png" alt="Precision agriculture — GPS yield-monitor swaths binned into a 50×50 field grid (Soybean Harvest 2019)"></a>
 
 ### Precision Agriculture Yield Analysis
