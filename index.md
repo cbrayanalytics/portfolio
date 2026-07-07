@@ -21,9 +21,12 @@ Linux · Spark · Hadoop · Hive · Cassandra · Redis · AWS S3 · Ansible · T
 ---
 
 <nav class="proj-index" markdown="1">
-**Selected** [Distributed-Storage Latency](#latency-diagnosis) · [Precision Agriculture](#precision-agriculture) · [Salary Analysis (Tableau)](#salary-analysis) · [Auto Loan Default](#auto-loan-default)
+Jump to a project
+{:.proj-index-title}
 
-**More** [Molecular Toxicity](#toxicity) · [Twitter Sentiment](#twitter-sentiment) · [Seed Analysis](#seed-analysis) · [Star Trek NLP](#star-trek-nlp) · [Vole Skull](#vole-skull)
+<span class="idx-label">Selected</span> [Distributed-Storage Latency](#latency-diagnosis) · [Precision Agriculture](#precision-agriculture) · [Salary Analysis (Tableau)](#salary-analysis) · [Auto Loan Default](#auto-loan-default)
+
+<span class="idx-label">More</span> [Molecular Toxicity](#toxicity) · [Twitter Sentiment](#twitter-sentiment) · [Seed Analysis](#seed-analysis) · [Star Trek NLP](#star-trek-nlp) · [Vole Skull](#vole-skull)
 </nav>
 
 ## Selected Work

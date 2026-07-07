@@ -110,26 +110,38 @@ h3 {
 
 .proj-index p { margin: 0 0 6px; }
 
-.proj-index strong {
-  display: inline-block;
-  min-width: 74px;
+/* block title — states what the block is */
+.proj-index-title {
   font-family: var(--mono);
-  font-size: 10.5px;
+  font-size: 11px;
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  margin: 0 0 12px;
+}
+
+/* group labels recede so the title leads */
+.idx-label {
+  display: inline-block;
+  min-width: 70px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
   color: var(--ink-muted);
 }
 
-/* links read as a clean nav strip: no underline, accent on hover, no mid-label wrap */
+/* links are the clickable elements: accent-colored, underline on hover, no mid-label wrap */
 .proj-index a {
   text-decoration: none;
-  color: var(--ink);
+  color: var(--accent);
   white-space: nowrap;
 }
 
 .proj-index a:hover {
-  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 /* Project thumbnails — left-floated card linking to the full view */
