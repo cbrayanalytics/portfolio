@@ -20,11 +20,17 @@ Linux · Spark · Hadoop · Hive · Cassandra · Redis · AWS S3 · Ansible · T
 
 ---
 
+<nav class="proj-index" markdown="1">
+**Selected** — [Distributed-Storage Latency](#latency-diagnosis) · [Precision Agriculture](#precision-agriculture) · [Salary Analysis (Tableau)](#salary-analysis) · [Auto Loan Default](#auto-loan-default)
+
+**More** — [Molecular Toxicity](#toxicity) · [Twitter Sentiment](#twitter-sentiment) · [Seed Analysis](#seed-analysis) · [Star Trek NLP](#star-trek-nlp) · [Vole Skull](#vole-skull)
+</nav>
+
 ## Selected Work
 
 <a class="proj-hero" href="https://github.com/cbrayanalytics/portfolio/blob/main/pythonprojects/cassandra-latency-diagnosis/latency_diagnosis.ipynb"><img src="assets/img/cassandra-latency-hero.png" alt="Grafana dashboard — Cassandra read p99 latency spiking alongside tombstones-scanned-per-read during the fault, then recovering as compaction drops the SSTable count"></a>
 
-### Diagnosing Distributed-Storage Latency from Metrics & Logs
+### Diagnosing Distributed-Storage Latency from Metrics & Logs {#latency-diagnosis}
 
 **A Cassandra read-latency regression traced — from client p99 down to a single log line — to a tombstone buildup, then fixed with compaction.**
 {:.proj-headline}
@@ -40,7 +46,7 @@ A self-contained, reproducible case study in the infrastructure↔analytics brid
 
 <a class="proj-hero" href="R%20Projects/PrecisionAgYield.Bray.pdf"><img src="assets/img/precision-ag-hero.png" alt="Precision agriculture — GPS yield-monitor swaths binned into a 50×50 field grid (Soybean Harvest 2019)"></a>
 
-### Precision Agriculture Yield Analysis
+### Precision Agriculture Yield Analysis {#precision-agriculture}
 
 **Seeding rate — not inherent soil quality — is the dominant driver of field yield.**
 {:.proj-headline}
@@ -56,7 +62,7 @@ A spatial causal analysis of four years (2017–2020) of GPS yield-monitor data 
 
 <a class="proj-hero" href="Tableau%20Projects/SalaryAnalysis.Bray.pdf"><img src="assets/img/salary-hero.png" alt="Salary analysis Tableau dashboard — paid vs cost-of-living-adjusted wage by job title and state"></a>
 
-### Salary Analysis of Data-Related Jobs (Tableau)
+### Salary Analysis of Data-Related Jobs (Tableau) {#salary-analysis}
 
 **A cost-of-living adjustment reorders the "best-paying" states away from the obvious coastal hubs.**
 {:.proj-headline}
@@ -72,7 +78,7 @@ A seven-view interactive Tableau dashboard examining compensation for four data-
 
 <a class="proj-hero" href="https://github.com/cbrayanalytics/portfolio/blob/main/pythonprojects/XGBClassification.ipynb"><img src="assets/img/auto-loan-hero.png" alt="Auto loan default prediction — XGBoost feature-importance (F-score) ranking"></a>
 
-### Auto Loan Default Prediction
+### Auto Loan Default Prediction {#auto-loan-default}
 
 **XGBoost held 78% accuracy down to 2 of 30 features — cutting model-serving cost with no accuracy loss.**
 {:.proj-headline}
@@ -93,7 +99,7 @@ The following is for a team-based approach to an auto loan default prediction al
 
 ## More Projects
 
-### Molecular Toxicity Classification
+### Molecular Toxicity Classification {#toxicity}
 
 <a class="proj-thumb" href="R%20Projects/ToxicityAnalysis.html"><img src="assets/img/toxicity.png" alt="Molecular toxicity classification — decision tree on molecular descriptors"></a>
 
@@ -106,7 +112,7 @@ A binary classification of 171 chemical compounds (toxic vs. non-toxic) using mo
 [![Static Badge](https://img.shields.io/badge/View_on_Github-grey?logo=GitHub&labelColor=%23181717)](https://github.com/cbrayanalytics/portfolio/blob/main/R%20Projects/ToxicityAnalysis.Rmd)
 
 
-### Twitter Sentiment Analysis
+### Twitter Sentiment Analysis {#twitter-sentiment}
 
 <a class="proj-thumb" href="https://github.com/cbrayanalytics/portfolio/blob/main/pythonprojects/sanders.ipynb"><img src="assets/img/twitter-sentiment.png" alt="Twitter sentiment analysis — SGD classifier per-class and macro F1 on held-out test"></a>
 
@@ -117,7 +123,7 @@ A comprehensive analysis of 5,000 twitter posts that includes preprocessing, tok
 [![Static Badge](https://img.shields.io/badge/View_Notebook-grey?logo=Jupyter&logoColor=white&labelColor=%2344A833)](https://github.com/cbrayanalytics/portfolio/blob/main/pythonprojects/sanders.ipynb)
 
 
-### Seed Analysis
+### Seed Analysis {#seed-analysis}
 
 <a class="proj-thumb" href="R%20Projects/FinalProject.html"><img src="assets/img/seed.png" alt="Dry bean seed analysis — feature pairs plot by class"></a>
 
@@ -130,7 +136,7 @@ A team-based approach to provide an accurate classification algorithm for mixed 
 [![Static Badge](https://img.shields.io/badge/View_on_Github-grey?logo=GitHub&labelColor=%23181717)](https://github.com/cbrayanalytics/portfolio/blob/main/R%20Projects/FinalProject.rmd)
 
 
-### Star Trek NLP — Preprocessing and Frequency Analysis
+### Star Trek NLP — Preprocessing and Frequency Analysis {#star-trek-nlp}
 
 <a class="proj-thumb" href="https://github.com/cbrayanalytics/portfolio/blob/main/pythonprojects/startrek_nlp.ipynb"><img src="assets/img/star-trek-nlp.png" alt="Star Trek NLP — top character-name token frequencies"></a>
 
@@ -141,7 +147,7 @@ An exploratory NLP pipeline on dialogue from *Star Trek: Enterprise* scripts. Bu
 [![Static Badge](https://img.shields.io/badge/View_Notebook-grey?logo=Jupyter&logoColor=white&labelColor=%2344A833)](https://github.com/cbrayanalytics/portfolio/blob/main/pythonprojects/startrek_nlp.ipynb)
 
 
-### Vole Skull Classification
+### Vole Skull Classification {#vole-skull}
 
 <a class="proj-thumb" href="R%20Projects/Project_1.Bray.html"><img src="assets/img/vole.png" alt="Vole skull classification — height vs width scatter colored by species"></a>
 

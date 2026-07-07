@@ -102,6 +102,24 @@ h3 {
   margin-top: 5px;
 }
 
+/* Project index — jump list above the work (Tier 2 #5) */
+.proj-index {
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.proj-index p { margin: 0 0 4px; }
+
+.proj-index strong {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  margin-right: 8px;
+}
+
 /* Project thumbnails — left-floated card linking to the full view */
 .proj-thumb {
   float: left;
