@@ -4,8 +4,8 @@ I keep petabyte-scale storage systems reliable — Cassandra, Redis, S3 on Linux
 {:.lede}
 
 <div class="metrics">
-  <div class="metric"><span class="metric-value">4+ yrs</span><span class="metric-label">Distributed storage in production</span></div>
-  <div class="metric"><span class="metric-value">Petabyte</span><span class="metric-label">Scale · Cassandra · Redis · S3</span></div>
+  <div class="metric"><span class="metric-value">4+ yrs</span><span class="metric-label">In production</span></div>
+  <div class="metric"><span class="metric-value">Petabyte</span><span class="metric-label">Cassandra · Redis · S3</span></div>
   <div class="metric"><span class="metric-value">M.S.</span><span class="metric-label">Data Analytics</span></div>
 </div>
 
