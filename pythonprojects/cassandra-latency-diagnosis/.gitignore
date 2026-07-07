@@ -3,3 +3,4 @@ __pycache__/
 *.pyc
 observability/jmx/*.jar
 latency_chart.png
+INTERVIEW_PREP.md
