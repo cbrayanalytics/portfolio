@@ -20,15 +20,6 @@ Linux · Spark · Hadoop · Hive · Cassandra · Redis · AWS S3 · Ansible · T
 
 ---
 
-<nav class="proj-index" markdown="1">
-Jump to a project
-{:.proj-index-title}
-
-<span class="idx-label">Selected</span> [Distributed-Storage Latency](#latency-diagnosis) · [Precision Agriculture](#precision-agriculture) · [Salary Analysis (Tableau)](#salary-analysis) · [Auto Loan Default](#auto-loan-default)
-
-<span class="idx-label">More</span> [Molecular Toxicity](#toxicity) · [Twitter Sentiment](#twitter-sentiment) · [Seed Analysis](#seed-analysis) · [Star Trek NLP](#star-trek-nlp) · [Vole Skull](#vole-skull)
-</nav>
-
 ## Selected Work
 
 <a class="proj-hero" href="https://github.com/cbrayanalytics/portfolio/blob/main/pythonprojects/cassandra-latency-diagnosis/latency_diagnosis.ipynb"><img src="assets/img/cassandra-latency-hero.png" alt="Grafana dashboard — Cassandra read p99 latency spiking alongside tombstones-scanned-per-read during the fault, then recovering as compaction drops the SSTable count"></a>

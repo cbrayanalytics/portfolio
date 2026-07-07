@@ -102,48 +102,6 @@ h3 {
   margin-top: 5px;
 }
 
-/* Project index — jump list above the work (Tier 2 #5) */
-.proj-index {
-  font-size: 14.5px;
-  line-height: 1.95;
-}
-
-.proj-index p { margin: 0 0 6px; }
-
-/* block title — states what the block is */
-.proj-index-title {
-  font-family: var(--mono);
-  font-size: 11px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--accent);
-  margin: 0 0 12px;
-}
-
-/* group labels recede so the title leads */
-.idx-label {
-  display: inline-block;
-  min-width: 70px;
-  font-family: var(--mono);
-  font-size: 10.5px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--ink-muted);
-}
-
-/* links are the clickable elements: accent-colored, underline on hover, no mid-label wrap */
-.proj-index a {
-  text-decoration: none;
-  color: var(--accent);
-  white-space: nowrap;
-}
-
-.proj-index a:hover {
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
 /* Project thumbnails — left-floated card linking to the full view */
 .proj-thumb {
   float: left;
